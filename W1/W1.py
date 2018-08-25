@@ -139,6 +139,9 @@ def test18():
     list = [n for n in range(0,10) if n % 5 == 0]
     assert list == [0,5]
 
+def test19():
+    print("do nothing")
+
 TestRig.O.k(test1)
 TestRig.O.k(test2)
 TestRig.O.k(test3)
