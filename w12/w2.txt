@@ -1,0 +1,41 @@
+D:\NCSUFSS18\W2\venv\Scripts\python.exe D:/NCSUFSS18/W2/W2.py
+
+-----| ok1 |-----------------------
+['outlook', '$temp', 'windy', 'play']
+['sunny', 85.0, 'FALSE', 'no']
+['sunny', 80.0, 'TRUE', 'no']
+['overcast', 83.0, 'FALSE', 'yes']
+['rainy', 70.0, 'FALSE', 'yes']
+['rainy', 68.0, 'FALSE', 'yes']
+['rainy', 65.0, 'TRUE', 'no']
+['overcast', 64.0, 'TRUE', 'yes']
+['sunny', 72.0, 'FALSE', 'no']
+['sunny', 69.0, 'FALSE', 'yes']
+['rainy', 75.0, 'FALSE', 'yes']
+['sunny', 75.0, 'TRUE', 'yes']
+['overcast', 100.0, 'TRUE', 'yes']
+['overcast', 81.0, 'FALSE', 'yes']
+['rainy', 71.0, 'TRUE', 'no']
+# pass
+
+-----| ok2 |-----------------------
+['outlook', '$temp', 'windy', 'play']
+['sunny', 85.0, 'FALSE', 'no']
+['sunny', 80.0, 'TRUE', 'no']
+['overcast', 83.0, 'FALSE', 'yes']
+['rainy', 70.0, 'FALSE', 'yes']
+['rainy', 68.0, 'FALSE', 'yes']
+['rainy', 65.0, 'TRUE', 'no']
+['overcast', 64.0, 'TRUE', 'yes']
+['sunny', 72.0, 'FALSE', 'no']
+['sunny', 69.0, 'FALSE', 'yes']
+['rainy', 75.0, 'FALSE', 'yes']
+['sunny', 75.0, 'TRUE', 'yes']
+['overcast', 100.0, 'TRUE', 'yes']
+['overcast', 81.0, 'FALSE', 'yes']
+['rainy', 71.0, 'TRUE', 'no']
+# pass
+
+# pass= 2 fail= 0 %pass = 100%
+
+Process finished with exit code 0
