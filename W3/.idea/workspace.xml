@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="efe11e80-a9a5-4f01-92b3-647986c2a12a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/TestRig.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/W3.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../W1/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../W1/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/../.gitignore" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
