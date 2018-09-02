@@ -30,14 +30,14 @@ def getPercentile(list, n):
     return list[index]
 
 def close(point, origin, range):
-    return math.fabs(math.fabs(((point-origin)/point)) - range)
+    return math.fabs(math.fabs(((point-origin)/point))) < range
 
 def testReservoirSampler():
     for item in range(1,10):
         list = []
         reservoir = reservoirSampler(streamOfRandomNumbers, int(math.pow(2, item)))
         percentile = getPercentile(reservoir, 50)
-        assert close(percentile, .5, .25) < .25
+        assert close(percentile, .5, .25)
 
 TestRig.O.k(testReservoirSampler)
 
@@ -49,13 +49,29 @@ def ComputeMuAndSdOnline(currentPhase, newValue):
     count = currentPhase[2]+1
     return (mean, sd, count)
 
-def testMuAndSd():
+def testGaussianSampler():
     currentPhase = [0,0,0]
     for index in range(0,len(samples)):
         currentPhase = ComputeMuAndSdOnline(currentPhase, samples[index])
     assert currentPhase[0] == 270.3 and close(math.sqrt(currentPhase[1]/(len(samples)-1)), 231.946, .001)
 
-TestRig.O.k(testMuAndSd)
+TestRig.O.k(testGaussianSampler)
+
+symbols = ['y','y','y','y','y','y','y','y','y','n','n','n','n','n']
+
+def ComputeEntropy(symbols):
+    numberOfYes = 0
+    for item in symbols:
+        if item == 'y':
+            numberOfYes = numberOfYes + 1
+    total = len(symbols)
+    numberOfNO = total - numberOfYes
+    return -(numberOfYes/total)*math.log2(numberOfYes/total) - (numberOfNO/total)*math.log2(numberOfNO/total)
 
 
+def testEntropySampler():
+    entropy = ComputeEntropy(symbols)
+    assert close(entropy, 0.9402, .001)
+
+TestRig.O.k(testEntropySampler)
 
