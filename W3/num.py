@@ -37,7 +37,7 @@ def testNum():
     currentPhase = [0,0,0,0,0,0]
     for index in range(0,len(samples)):
         currentPhase = numIncrement(currentPhase, samples[index])
-    print("(means, variance, sd, min, max, total)")
+    print("(means, variance, sd, total, min, max)")
     print(currentPhase)
     assert currentPhase[0] == 270.3 and Config.Close(currentPhase[2], 231.946, .01)
 

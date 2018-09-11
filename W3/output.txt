@@ -16,11 +16,12 @@ Process finished with exit code 0
 /home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/num.py
 
 -----| testNum |-----------------------
-(means, variance, sd, min, max, total)
+(means, variance, sd, total, min, max)
 (270.3, 1560174.2999999998, 231.94635973238175, 30, 0, 1000)
 # pass
 
 Process finished with exit code 0
+
 
 /home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/sym.py
 
