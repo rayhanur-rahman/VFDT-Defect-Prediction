@@ -43,7 +43,7 @@ def testSym():
     for item in symbols:
         currentPhase = symIncrement(currentPhase, item)
     output = symEntropy(currentPhase)
-    print(output)
+    print("Entropy: " + str(output))
     assert Config.Close(output, .9403, .01)
 
 
