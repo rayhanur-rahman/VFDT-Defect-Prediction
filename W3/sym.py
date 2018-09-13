@@ -11,6 +11,8 @@ symbols = Config.syms
 # it just stores its statistical information at a time which are count of all symbols, mode and number of maximum occurance
 
 def symIncrement(currentPhase, randomInput):
+    if randomInput == '?':
+        return currentPhase
     count = currentPhase[0]
     if randomInput in count:
         count[randomInput] = count[randomInput] + 1

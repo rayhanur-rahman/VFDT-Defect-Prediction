@@ -1,4 +1,4 @@
-import TestRig, Config, math, random, re
+import TestRig, Config, math, random, re, sample
 
 samples = Config.samples
 
@@ -7,6 +7,8 @@ samples = Config.samples
 # it just stores its statistical information at a time
 
 def numIncrement(currentPhase, randomInput):
+    if randomInput == '?':
+        return currentPhase
     mean = currentPhase[0] + (randomInput - currentPhase[0]) / (currentPhase[3] + 1)
     var = currentPhase[1] + (randomInput - currentPhase[0]) * (randomInput - mean)
     count = currentPhase[3] + 1
@@ -16,6 +18,8 @@ def numIncrement(currentPhase, randomInput):
     return (mean, var, sd, count, min, max)
 
 def numDecrement(currentPhase, randomInput):
+    if randomInput == '?':
+        return currentPhase
     mean = currentPhase[0] - (randomInput - currentPhase[0]) / (currentPhase[3] + 1)
     var = currentPhase[1] - (randomInput - currentPhase[0]) * (randomInput - mean)
     count = currentPhase[3] - 1
