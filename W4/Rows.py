@@ -40,24 +40,13 @@ with open('auto.csv') as csv_file:
 
         line_count += 1
 
+print("(title, total, mode, frequency)")
 for item in syms:
-    print(item.title, end=" ")
-    print(item.total, end=" ")
-    print(item.mode, end=" ")
-    print(item.most, end=" ")
-    print(item.frequency)
-    print(item.getEntropy())
-    print("*********")
+    print(f'({item.title}, {item.total}, {item.mode}, {item.most})')
 
+print("")
 
-
+print("(title, total, mean, standard deviation)")
 for item in nums:
-    print(item.title, end=" ")
-    print(item.count, end=" ")
-    print(item.mean, end=" ")
-    print(item.variance, end=" ")
-    print(item.sd, end=" ")
-    print(item.min, end=" ")
-    print(item.max, end=" ")
-    print("\n***\n")
+    print(f'({item.title}, {item.count}, {item.mean : 0.2f}, {item.sd : 0.2f})')
 
