@@ -19,7 +19,6 @@ def sampleIncrement(sample, randomInput):
     actualSize = len(sample[0])
     sample[1] = sample[1] + 1
     sequence = sample[1]
-
     if actualSize < maxSize:
         sample[0].append(randomInput)
     else:
@@ -35,11 +34,14 @@ def testSample():
     sample = createSamples()
 
     print("Size:\t50th Percentile")
-
+    x=0
     for item in sample:
         for randomNumber in streamOfRandomNumbers:
+            if item[2] == 32:
+                x = x+1
             sampleIncrement(item, randomNumber)
         Config.SampleSort(item[0])
+        # print(item[0])
         percentile = Config.GetPercentile(item[0], 50)
         print( str(int(item[2])) + ": \t" + str(percentile))
         assert Config.Close(percentile, 0.5, 0.33) == True

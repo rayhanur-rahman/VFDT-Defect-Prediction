@@ -1,4 +1,4 @@
-import TestRig, Config, math, random, re, sample
+import TestRig, Config, math, random, re
 
 samples = Config.samples
 
