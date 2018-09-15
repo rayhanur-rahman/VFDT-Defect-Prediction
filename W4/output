@@ -1,68 +1,74 @@
 /home/rr/Workspace/brokenquark/NCSUFSS18/W4/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W4/App.py
 ---statistics of weather Load All into RAM---
-(title, total, mode, frequency)
-(outlook, 14, sunny, 5)
-(wind, 14, FALSE, 8)
-(!play, 14, yes, 9)
+(Id, title, total, mode, frequency)
+(0, outlook, 14, sunny, 5)
+(3, wind, 14, FALSE, 8)
+(4, !play, 14, yes, 9)
 
-(title, total, mean, standard deviation)
-($temp, 14,  73.57,  6.57)
+(Id, title, total, mean, standard deviation)
+(1, $temp, 14,  73.57,  6.57)
 ---###---
+
 ---statistics of weather long Load All into RAM---
-(title, total, mode, frequency)
-(%outlook, 28, sunny, 10)
-(wind, 28, FALSE, 16)
-(!play, 28, yes, 18)
+(Id, title, total, mode, frequency)
+(0, %outlook, 28, sunny, 10)
+(3, wind, 28, FALSE, 16)
+(4, !play, 28, yes, 18)
 
-(title, total, mean, standard deviation)
-($temp, 28,  73.57,  6.45)
-(<humid, 28,  81.64,  10.09)
+(Id, title, total, mean, standard deviation)
+(1, $temp, 28,  73.57,  6.45)
+(2, <humid, 28,  81.64,  10.09)
 ---###---
+
 ---statistics of auto Load All into RAM---
-(title, total, mode, frequency)
-(%cylinders, 398, 4, 204)
-(origin, 398, 1, 249)
+(Id, title, total, mode, frequency)
+(0, %cylinders, 398, 4, 204)
+(6, origin, 398, 1, 249)
 
-(title, total, mean, standard deviation)
-($displacement, 398,  193.43,  104.27)
-($horsepower, 392,  104.47,  38.49)
-(<weight, 398,  2970.42,  846.84)
-(>acceltn, 398,  15.57,  2.76)
-($model, 398,  76.01,  3.70)
-(>mpg, 398,  23.84,  8.34)
+(Id, title, total, mean, standard deviation)
+(1, $displacement, 398,  193.43,  104.27)
+(2, $horsepower, 392,  104.47,  38.49)
+(3, <weight, 398,  2970.42,  846.84)
+(4, >acceltn, 398,  15.57,  2.76)
+(5, $model, 398,  76.01,  3.70)
+(7, >mpg, 398,  23.84,  8.34)
 ---###---
+
 ---statistics of weather Load Sequentially from Secondary Memory---
-(title, total, mode, frequency)
-(outlook, 14, sunny, 5)
-(wind, 14, FALSE, 8)
-(!play, 14, yes, 9)
+(Id, title, total, mode, frequency)
+(0, outlook, 14, sunny, 5)
+(3, wind, 14, FALSE, 8)
+(4, !play, 14, yes, 9)
 
-(title, total, mean, standard deviation)
-($temp, 14,  73.57,  6.57)
+(Id, title, total, mean, standard deviation)
+(1, $temp, 14,  73.57,  6.57)
 ---***---
+
 ---statistics of weather long Load Sequentially from Secondary Memory---
-(title, total, mode, frequency)
-(%outlook, 28, sunny, 10)
-(wind, 28, FALSE, 16)
-(!play, 28, yes, 18)
+(Id, title, total, mode, frequency)
+(0, %outlook, 28, sunny, 10)
+(3, wind, 28, FALSE, 16)
+(4, !play, 28, yes, 18)
 
-(title, total, mean, standard deviation)
-($temp, 28,  73.57,  6.45)
-(<humid, 28,  81.64,  10.09)
+(Id, title, total, mean, standard deviation)
+(1, $temp, 28,  73.57,  6.45)
+(2, <humid, 28,  81.64,  10.09)
 ---***---
+
 ---statistics of auto Load Sequentially from Secondary Memory---
-(title, total, mode, frequency)
-(%cylinders, 398, 4, 204)
-(origin, 398, 1, 249)
+(Id, title, total, mode, frequency)
+(0, %cylinders, 398, 4, 204)
+(6, origin, 398, 1, 249)
 
-(title, total, mean, standard deviation)
-($displacement, 398,  193.43,  104.27)
-($horsepower, 392,  104.47,  38.49)
-(<weight, 398,  2970.42,  846.84)
-(>acceltn, 398,  15.57,  2.76)
-($model, 398,  76.01,  3.70)
-(>mpg, 398,  23.84,  8.34)
+(Id, title, total, mean, standard deviation)
+(1, $displacement, 398,  193.43,  104.27)
+(2, $horsepower, 392,  104.47,  38.49)
+(3, <weight, 398,  2970.42,  846.84)
+(4, >acceltn, 398,  15.57,  2.76)
+(5, $model, 398,  76.01,  3.70)
+(7, >mpg, 398,  23.84,  8.34)
 ---***---
+
 
 Process finished with exit code 0
 

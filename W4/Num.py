@@ -2,7 +2,7 @@ import Config, math
 
 
 class Num:
-    def __init__(self, title):
+    def __init__(self, title, columnIndex):
         self.mean = 0
         self.variance = 0
         self.sd = 0
@@ -11,6 +11,9 @@ class Num:
         self.max = 0
         self.listOfSamples = []
         self.title = title
+        self.goal = None
+        self.status = None
+        self.columnIndex = columnIndex
 
     def increment(self, randomInput):
         if randomInput == '?':

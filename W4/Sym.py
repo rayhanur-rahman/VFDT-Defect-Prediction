@@ -1,12 +1,15 @@
 import Config, math, random, re
 
 class Sym:
-    def __init__(self, title):
+    def __init__(self, title, columnIndex):
         self.frequency = {}
         self.total = 0
         self.mode = None
         self.most = None
         self.title = title
+        self.status = None
+        self.isClass = None
+        self.columnIndex = columnIndex
 
     def increment(self, randomInput):
         if randomInput == '?':
