@@ -1,6 +1,6 @@
 import csv,sys, Num, Sym
 
-class CSVDataImporterAtOnce:
+class Table:
 
     def __init__(self, csvfile):
         self.nums = []
@@ -85,7 +85,7 @@ class CSVDataImporterAtOnce:
             if sym is not None: sym.status = self.status[key]
 
 
-class CSVDataImporterSequential:
+class LazyTable:
     def __init__(self, csvfile):
         self.nums = []
         self.syms = []
