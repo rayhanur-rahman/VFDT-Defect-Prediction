@@ -1,3 +1,6 @@
+import  sys
+sys.path.insert(0, '../W1/')
+
 import re, TestRig
 
 DATA1 = """

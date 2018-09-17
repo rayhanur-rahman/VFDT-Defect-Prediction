@@ -1,6 +1,7 @@
-import Config, Sample, math, random, Num, Sym, Rows, csv
+import sys
+sys.path.insert(0, '../W3/')
 
-random.seed(0)
+import Config, Sample, math, random, Num, Sym, Rows
 
 print('---statistics of weather Load All into RAM---')
 csv_reader = Rows.Table("weather.csv")

@@ -1,9 +1,4 @@
-import sys
-sys.path.insert(0, '../W3/')
-
-from App.
-
-import csv, Num, Sym
+import csv,sys, Num, Sym
 
 class Table:
 

@@ -1,34 +1,25 @@
-/home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/sample.py
+/home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/App.py
 
 -----| testSample |-----------------------
 Size:	50th Percentile
-16: 	0.5739
-32: 	0.4322
-64: 	0.4429
-128: 	0.4655
-256: 	0.5084
-512: 	0.5099
-1024: 	0.486
+16 :	 0.57
+32 :	 0.43
+64 :	 0.44
+128 :	 0.47
+256 :	 0.51
+512 :	 0.51
+1024 :	 0.49
 # pass
-
-Process finished with exit code 0
-
-/home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/num.py
 
 -----| testNum |-----------------------
-(means, variance, sd, total, min, max)
-(270.3, 1560174.2999999998, 231.94635973238175, 30, 0, 1000)
+mean & sd
+270.30 & 231.95
 # pass
-
-Process finished with exit code 0
-
-
-/home/rr/Workspace/brokenquark/NCSUFSS18/W3/venv/bin/python /home/rr/Workspace/brokenquark/NCSUFSS18/W3/sym.py
 
 -----| testSym |-----------------------
-Entropy: 0.9402859586706309
+Entropy
+0.9402859586706309
 # pass
 
 Process finished with exit code 0
-
 

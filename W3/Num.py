@@ -18,11 +18,12 @@ class Num:
     def increment(self, randomInput):
         if randomInput == '?':
             return
-        d = (randomInput - self.mean)
-        self.mean = self.mean + d / (self.count + 1)
-        self.variance = self.variance + d * (randomInput - self.mean)
         self.count = self.count + 1
-        self.sd = math.sqrt(self.variance / (self.count - 1 + Config.Config.minNumber)) if self.count >= 2 else 0
+        d = (randomInput - self.mean)
+        self.mean = self.mean + d / (self.count)
+        self.variance = self.variance + d * (randomInput - self.mean)
+        self.sd = math.sqrt(
+            math.fabs(self.variance) / (self.count - 1 + Config.Config.minNumber)) if self.count >= 2 else 0
         self.min = randomInput if randomInput < self.min else self.min
         self.max = randomInput if randomInput > self.max else self.max
         return
@@ -30,11 +31,12 @@ class Num:
     def decrement(self, randomInput):
         if self.count == 1 or randomInput == '?':
             return
-        d = (randomInput - self.mean)
-        self.mean = self.mean - d / (self.count + 1)
-        self.variance = self.variance - d * (randomInput - self.mean)
         self.count = self.count - 1
-        self.sd = math.sqrt(self.variance / (self.count - 1 + Config.Config.minNumber)) if self.count >= 2 else 0
+        d = (randomInput - self.mean)
+        self.mean = self.mean - d / self.count
+        self.variance = self.variance - d * (randomInput - self.mean)
+        self.sd = math.sqrt(
+            math.fabs(self.variance) / (self.count - 1 + Config.Config.minNumber)) if self.count >= 2 else 0
         self.min = randomInput if randomInput < self.min else self.min
         self.max = randomInput if randomInput > self.max else self.max
         return
