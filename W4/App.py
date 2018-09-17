@@ -3,24 +3,34 @@ sys.path.insert(0, '../W3/')
 
 import Config, Sample, math, random, Num, Sym, Rows
 
-print('---statistics of weather Load All into RAM---')
-csv_reader = Rows.Table("weather.csv")
+print('---using yield & generator---')
+print('---it does not load the whole data to RAM---')
+print('---but it is supposed to load all the pointers to RAM---\n')
+print('---statistics of weather---')
+table = Rows.TableLoader('weather.csv')
+table.loadTableWithGenerator()
 
-print('---statistics of weather long Load All into RAM---')
-csv_reader = Rows.Table("weatherLong.csv")
+print('---statistics of weather long---')
+table = Rows.TableLoader('weatherLong.csv')
+table.loadTableWithGenerator()
 
-print('---statistics of auto Load All into RAM---')
-csv_reader = Rows.Table("auto.csv")
+print('---statistics of auto---')
+table = Rows.TableLoader('auto.csv')
+table.loadTableWithGenerator()
 
+print('---using standard IO---')
+print('---it does not load the whole data to RAM---')
+print('---t is supposed to load only one line to RAM---\n')
 
-print('---statistics of weather Load Sequentially from Secondary Memory---')
-csv_reader = Rows.LazyTable("weather.csv")
+print('---statistics of weather---')
+table = Rows.TableLoader('weather.csv')
+table.loadTableWithStandardInput()
 
-print('---statistics of weather long Load Sequentially from Secondary Memory---')
-csv_reader = Rows.LazyTable("weatherLong.csv")
+print('---statistics of weather long---')
+table = Rows.TableLoader('weatherLong.csv')
+table.loadTableWithStandardInput()
 
-print('---statistics of auto Load Sequentially from Secondary Memory---')
-csv_reader = Rows.LazyTable("auto.csv")
-
-
+print('---statistics of auto---')
+table = Rows.TableLoader('auto.csv')
+table.loadTableWithStandardInput()
 
