@@ -15,6 +15,10 @@ class TableLoader:
         self.line_count = 1
         self.toBeIgnored = []
         self.toBeParsedToInt = []
+        self.independents=[]
+        self.dependents = []
+        self.minimizetionGoal = []
+        self.maximizationGoal = []
         self.titles = []
 
         self.listOfDataAsDictionary = []
@@ -31,13 +35,18 @@ class TableLoader:
                 else:
                     if '$' in item:
                         self.toBeParsedToInt.append(index)
+                        self.independents.append(index)
                         self.status[item] = "independent"
                     if '>' in item:
                         self.toBeParsedToInt.append(index)
+                        self.maximizationGoal.append(index)
+                        self.dependents.append(index)
                         self.goals[item] = 'max'
                         self.status[item] = "dependent"
                     if '<' in item:
                         self.toBeParsedToInt.append(index)
+                        self.minimizetionGoal.append(index)
+                        self.dependents.append(index)
                         self.goals[item] = 'min'
                         self.status[item] = "dependent"
                     if '!' in item:

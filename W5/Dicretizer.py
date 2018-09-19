@@ -4,21 +4,23 @@ class Unsupervised:
     def discretize(self, csvFile, rowName):
         table = Rows.TableLoader(csvFile)
         table.loadTableWithGenerator()
-        newList = []
+        filteredData = []
 
         for item in table.listOfDataAsDictionary:
             item['minRange'] = item['maxRange'] = item['corrupted'] = None
             if item[rowName] == '?':
                 item['corrupted'] = True
             else:
-                newList.append(item)
+                filteredData.append(item)
 
-        newList.sort(key=lambda k: k[rowName])
-        enough = math.pow(len(newList), 0.5)
+        table.listOfDataAsDictionary = None
+
+        filteredData.sort(key=lambda k: k[rowName])
+        enough = math.pow(len(filteredData), 0.5)
         margin = 1.00
         queue = []
-        queue.append(newList)
-        finalQueue = []
+        queue.append(filteredData)
+        discretizedData = []
 
         while len(queue) != 0:
             poppedItem = queue.pop(0)
@@ -37,7 +39,7 @@ class Unsupervised:
                     element['minRange'] = min
                 for x in poppedItem:
                     if len(x) > 0:
-                        finalQueue.append(x)
+                        discretizedData.append(x)
                 continue
             num1 = Num.Num("", None)
             num2 = Num.Num("", None)
@@ -65,18 +67,18 @@ class Unsupervised:
             # print(queue)
             # print(len(queue))
 
-        finalQueue.sort(key=lambda k: k['minRange'])
+        discretizedData.sort(key=lambda k: k['minRange'])
 
         for i in range(0, len(table.titles)):
-            if i not in table.toBeIgnored: print(f"{table.titles[i]}", end="---")
+            if i not in table.toBeIgnored: print(f"{table.titles[i]}", end="   ")
 
-        print(f'{rowName}..ranges')
+        print(f'{rowName}-range')
 
-        for item in finalQueue:
+        for item in discretizedData:
             for x in range(0, len(table.titles)):
-                if x not in table.toBeIgnored: print(f'{item[table.titles[x]]}', end="---")
-            print(f'{item["minRange"]: .0f}..{item["maxRange"]:.0f}', end="")
+                if x not in table.toBeIgnored: print(f'{item[table.titles[x]]}', end="   ")
+            print(f'{item["minRange"]: .0f}-{item["maxRange"]:.0f}', end="")
 
             print("")
 
-        return finalQueue
+        return discretizedData
