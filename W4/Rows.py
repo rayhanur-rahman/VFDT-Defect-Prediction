@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0, '../W3/')
 
-import csv, Num, Sym
+import csv, Num, Sym, math
 
 class TableLoader:
     def __init__(self, csvfile):
@@ -17,28 +17,33 @@ class TableLoader:
         self.toBeParsedToInt = []
         self.titles = []
 
+        self.listOfDataAsDictionary = []
+
     def processLine(self, row):
+        dictionary = {}
         for index in range(0, len(row)):
             item = row[index].strip()
             item = item.replace('\n', '')
-            self.titles.append(item)
             if self.line_count == 1:
+                self.titles.append(item)
                 if '?' in item:
                     self.toBeIgnored.append(index)
-                if '$' in item:
-                    self.toBeParsedToInt.append(index)
-                if '>' in item:
-                    self.toBeParsedToInt.append(index)
-                    self.goals[item] = 'max'
-                    self.status[item] = "dependent"
-                if '<' in item:
-                    self.toBeParsedToInt.append(index)
-                    self.goals[item] = 'min'
-                    self.status[item] = "independent"
-                if '!' in item:
-                    self.isClass[item] = True
-                if '%' in item:
-                    pass
+                else:
+                    if '$' in item:
+                        self.toBeParsedToInt.append(index)
+                        self.status[item] = "independent"
+                    if '>' in item:
+                        self.toBeParsedToInt.append(index)
+                        self.goals[item] = 'max'
+                        self.status[item] = "dependent"
+                    if '<' in item:
+                        self.toBeParsedToInt.append(index)
+                        self.goals[item] = 'min'
+                        self.status[item] = "dependent"
+                    if '!' in item:
+                        self.isClass[item] = True
+                    if '%' in item:
+                        pass
             if index not in self.toBeIgnored:
                 if self.line_count == 1:
                     if index not in self.toBeParsedToInt:
@@ -48,12 +53,17 @@ class TableLoader:
                 else:
                     if index not in self.toBeParsedToInt:
                         sym = next((x for x in self.syms if x.title == self.titles[index]), None)
+                        dictionary[self.titles[index]] = item
                         if '?' not in item:
                             sym.increment(item)
                     if index in self.toBeParsedToInt:
                         num = next((x for x in self.nums if x.title == self.titles[index]), None)
                         if '?' not in item:
                             num.increment(float(item))
+                            dictionary[self.titles[index]] = float(item)
+                        else:
+                            dictionary[self.titles[index]] = item
+        return dictionary
 
     def showStatistics(self):
         print("(Id, title, total, mode, frequency)")
@@ -92,7 +102,7 @@ class TableLoader:
                 self.line_count += 1
                 line = file.readline()
         self.setMeta()
-        self.showStatistics()
+        # self.showStatistics()
 
     def csvRowsGenerator(self):
         with open(self.csvfile) as csv_file:
@@ -101,15 +111,17 @@ class TableLoader:
                 yield row
 
     def readRowsLineByLine(self):
-            for row in self.csvRowsGenerator():
-                self.processLine(row)
-                self.line_count += 1
+        for row in self.csvRowsGenerator():
+            dictionary = self.processLine(row)
+            if len(dictionary) > 0: self.listOfDataAsDictionary.append(dictionary)
+            self.line_count += 1
 
     def loadTableWithGenerator(self):
         self.csvRowsGenerator()
         self.readRowsLineByLine()
         self.setMeta()
-        self.showStatistics()
+        # self.showStatistics()
 
     def loadTableWithStandardInput(self):
         self.openFile(self.csvfile)
+
