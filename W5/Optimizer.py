@@ -1,4 +1,8 @@
-import math, random, Num, Sym, Rows, csv, Model, sys, Dicretizer, prettytable
+import Rows
+import math
+import prettytable
+import random
+
 
 class Dom:
     def getScore(self, csvFile):

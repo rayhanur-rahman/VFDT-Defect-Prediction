@@ -1,7 +1,4 @@
-import sys
-sys.path.insert(0, '../W3/')
-
-import csv, Num, Sym, math
+import csv, Num, Sym, math, prettytable
 
 class TableLoader:
     def __init__(self, csvfile):
@@ -75,16 +72,20 @@ class TableLoader:
         return dictionary
 
     def showStatistics(self):
-        print("(Id, title, total, mode, frequency)")
+        pt1 = prettytable.PrettyTable()
+        pt2 = prettytable.PrettyTable()
+
+        pt1.field_names = ['Column Id', 'title', 'total', 'mode', 'frequency']
         for item in self.syms:
-            print(f'({item.columnIndex}, {item.title}, {item.total}, {item.mode}, {item.most})')
+            pt1.add_row([item.columnIndex, item.title, item.total, item.mode, item.most])
 
-        print("")
-
-        print("(Id, title, total, mean, standard deviation)")
+        pt2.field_names = ['Column Id', 'title', 'total', 'mean', 'std. dev.']
         for item in self.nums:
-            print(f'({item.columnIndex}, {item.title}, {item.count}, {item.mean : 0.2f}, {item.sd : 0.2f})')
-        print('---###---\n')
+            pt2.add_row([item.columnIndex, item.title, item.count, item.mean, item.sd])
+
+        print(pt1)
+        print(pt2)
+
 
     def setMeta(self):
         for key in self.goals:

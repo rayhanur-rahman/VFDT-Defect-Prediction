@@ -1,4 +1,9 @@
-import math, random, Num, Sym, Rows, csv, Model, sys, prettytable
+import Num
+import Rows
+import math
+import prettytable
+import sys
+
 
 class Unsupervised:
     def discretize(self, csvFile, rowName):
