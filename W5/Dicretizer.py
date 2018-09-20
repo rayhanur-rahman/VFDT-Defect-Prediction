@@ -1,4 +1,4 @@
-import math, random, Num, Sym, Rows, csv, Model, sys
+import math, random, Num, Sym, Rows, csv, Model, sys, prettytable
 
 class Unsupervised:
     def discretize(self, csvFile, rowName):
@@ -64,21 +64,29 @@ class Unsupervised:
 
             if len(list1) > 0: queue.append(list1)
             if len(list2) > 0: queue.append(list2)
-            # print(queue)
-            # print(len(queue))
 
         discretizedData.sort(key=lambda k: k['minRange'])
 
-        for i in range(0, len(table.titles)):
-            if i not in table.toBeIgnored: print(f"{table.titles[i]}", end="   ")
+        pt = prettytable.PrettyTable()
+        list = []
 
-        print(f'{rowName}-range')
+        for i in range(0, len(table.titles)):
+            if i not in table.toBeIgnored:
+                list.append(table.titles[i])
+
+        list.append((rowName+"-range"))
+        pt.field_names = list
+        list  = []
 
         for item in discretizedData:
             for x in range(0, len(table.titles)):
-                if x not in table.toBeIgnored: print(f'{item[table.titles[x]]}', end="   ")
-            print(f'{item["minRange"]: .0f}-{item["maxRange"]:.0f}', end="")
+                if x not in table.toBeIgnored:
+                    list.append(str(item[table.titles[x]]))
+            list.append(str(item["minRange"]) + "-" + str(item["maxRange"]))
 
-            print("")
+            pt.add_row(list)
+            list=[]
 
+
+        print(pt)
         return discretizedData

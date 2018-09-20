@@ -1,4 +1,2 @@
-import math, random, Num, Sym, Rows, csv, Model, sys, Dicretizer
+import math, random, Num, Sym, Rows, csv, Model, sys, Dicretizer, prettytable
 
-discretizer = Dicretizer.Unsupervised()
-discretizer.discretize("weatherLong.csv", '$temp')
