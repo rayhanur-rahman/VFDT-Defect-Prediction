@@ -48,19 +48,22 @@ class Dom:
 
         list = []
         for key in filteredData[0]:
-            list.append(key)
+            if key != 'minRange' and key != 'maxRange' and key != 'corrupted':
+                list.append(key)
         pt.field_names = list
 
         for index in range(0, 5):
             list = []
             for key in filteredData[index]:
-                list.append(str(filteredData[index][key]))
+                if key != 'minRange' and key != 'maxRange' and key != 'corrupted':
+                    list.append(str(filteredData[index][key]))
             pt.add_row(list)
 
         for index in range(len(filteredData) - 5, len(filteredData)):
             list = []
             for key in filteredData[index]:
-                list.append(str(filteredData[index][key]))
+                if key != 'minRange' and key != 'maxRange' and key != 'corrupted':
+                    list.append(str(filteredData[index][key]))
             pt.add_row(list)
 
         print(pt)
