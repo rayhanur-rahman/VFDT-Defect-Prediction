@@ -51,21 +51,23 @@ class Unsupervised:
             for item in poppedItem:
                 num1.increment(item[rowName])
             best = num1.sd
-            cut = None
+            cutIndex = None
+            count = 0
             for item in poppedItem:
                 num1.decrement(item[rowName])
                 num2.increment(item[rowName])
-                if num1.count >= enough and num2.count >= enough:
+                if num1.count >= math.ceil(enough) and num2.count >= math.ceil(enough):
                     expectedValueOfSd = num1.getExpectedValue(num2) * 1.05
                     if expectedValueOfSd < best*margin:
-                        cut = item[rowName]
+                        cutIndex = count
+                count = count + 1
             list1 = []
             list2 = []
-            for item in poppedItem:
-                if item[rowName] < cut:
-                    list1.append(item)
+            for index in range(0, len(poppedItem)):
+                if index < cutIndex:
+                    list1.append(poppedItem[index])
                 else:
-                    list2.append(item)
+                    list2.append(poppedItem[index])
 
             if len(list1) > 0: queue.append(list1)
             if len(list2) > 0: queue.append(list2)
