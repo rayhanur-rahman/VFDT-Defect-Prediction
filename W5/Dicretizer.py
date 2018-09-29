@@ -11,6 +11,8 @@ class Unsupervised:
         table.loadTableWithGenerator()
         filteredData = []
 
+
+
         for item in table.listOfDataAsDictionary:
             item['minRange'] = item['maxRange'] = item['corrupted'] = None
             if item[rowName] == '?':
@@ -60,17 +62,32 @@ class Unsupervised:
                     expectedValueOfSd = num1.getExpectedValue(num2) * 1.05
                     if expectedValueOfSd < best*margin:
                         cutIndex = count
+                        best = expectedValueOfSd
                 count = count + 1
-            list1 = []
-            list2 = []
-            for index in range(0, len(poppedItem)):
-                if index < cutIndex:
-                    list1.append(poppedItem[index])
-                else:
-                    list2.append(poppedItem[index])
+            if cutIndex is not None:
+                list1 = []
+                list2 = []
+                for index in range(0, len(poppedItem)):
+                    if index < cutIndex:
+                        list1.append(poppedItem[index])
+                    else:
+                        list2.append(poppedItem[index])
 
-            if len(list1) > 0: queue.append(list1)
-            if len(list2) > 0: queue.append(list2)
+                if len(list1) > 0: queue.append(list1)
+                if len(list2) > 0: queue.append(list2)
+
+            if cutIndex is None:
+                for element in poppedItem:
+                    if min > element[rowName]:
+                        min = element[rowName]
+                    if max < element[rowName]:
+                        max = element[rowName]
+                for element in poppedItem:
+                    element['maxRange'] = max
+                    element['minRange'] = min
+                for x in poppedItem:
+                    if len(x) > 0:
+                        discretizedData.append(x)
 
         discretizedData.sort(key=lambda k: k['minRange'])
 

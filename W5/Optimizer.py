@@ -21,6 +21,9 @@ class Dom:
 
         random.seed(0)
 
+
+
+
         for item in filteredData:
             a = item
             for i in range(0, 100):
