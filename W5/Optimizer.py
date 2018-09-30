@@ -69,5 +69,5 @@ class Dom:
                     list.append(str(filteredData[index][key]))
             pt.add_row(list)
 
-        print(pt)
-        return filteredData
+        # print(pt)
+        return [filteredData, pt]

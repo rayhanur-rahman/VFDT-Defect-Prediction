@@ -35,7 +35,7 @@ class Unsupervised:
             high = len(poppedItem)
             min = sys.maxsize
             max = -sys.maxsize
-            if high - low < 2 * math.ceil(enough):
+            if high - low <= 2 * math.ceil(enough):
                 for element in poppedItem:
                     if min > element[rowName]:
                         min = element[rowName]
@@ -68,7 +68,7 @@ class Unsupervised:
                 list1 = []
                 list2 = []
                 for index in range(0, len(poppedItem)):
-                    if index < cutIndex:
+                    if index <= cutIndex:
                         list1.append(poppedItem[index])
                     else:
                         list2.append(poppedItem[index])
@@ -112,5 +112,5 @@ class Unsupervised:
             list=[]
 
 
-        print(pt)
-        return discretizedData
+        # print(pt)
+        return [discretizedData, pt]
