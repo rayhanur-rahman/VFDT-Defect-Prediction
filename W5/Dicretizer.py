@@ -22,6 +22,8 @@ class Unsupervised:
 
         table.listOfDataAsDictionary = None
 
+
+
         filteredData.sort(key=lambda k: k[rowName])
         enough = math.pow(len(filteredData), 0.5)
         margin = 1.00

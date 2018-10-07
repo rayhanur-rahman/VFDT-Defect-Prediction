@@ -1,0 +1,163 @@
+D:\NCSUFSS18\W7\venv\Scripts\python.exe D:/NCSUFSS18/W7/App.py
+warning: my output is a little bit verbose...
+only look for the best cut line if you are in a hurry
+
+FFT for auto
+$displacement
+68.0 <= $displacement <= 150.0 : 0.730
+151.0 <= $displacement <= 455.0 : 0.272
+$horsepower
+46.0 <= $horsepower <= 93.0 : 0.736
+94.0 <= $horsepower <= 230.0 : 0.266
+$model
+70.0 <= $model <= 75.0 : 0.417
+76.0 <= $model <= 82.0 : 0.585
+%cylinders = {'4', '8', '3', '5', '6'}
+%cylinders = 4 : 0.731
+%cylinders = 8 : 0.137
+%cylinders = 3 : 0.423
+%cylinders = 5 : 0.663
+%cylinders = 6 : 0.399
+origin = {'1', '3', '2'}
+origin = 1 : 0.372
+origin = 3 : 0.744
+origin = 2 : 0.685
+
+best cut is: {'score': 0.7441772151898739, 'type': 'symbolic', 'column': 'origin', 'start': None, 'end': None, 'equals': '3'}
+end of pass 1
+###############
+
+$displacement
+68.0 <= $displacement <= 224.0 : 0.657
+225.0 <= $displacement <= 455.0 : 0.222
+$horsepower
+46.0 <= $horsepower <= 99.0 : 0.660
+100.0 <= $horsepower <= 230.0 : 0.219
+$model
+70.0 <= $model <= 75.0 : 0.346
+76.0 <= $model <= 82.0 : 0.533
+%cylinders = {'4', '8', '6', '5'}
+%cylinders = 4 : 0.699
+%cylinders = 8 : 0.137
+%cylinders = 6 : 0.399
+%cylinders = 5 : 0.663
+origin = {'1', '2'}
+origin = 1 : 0.372
+origin = 2 : 0.685
+
+best cut is: {'score': 0.6986153846153847, 'type': 'symbolic', 'column': '%cylinders', 'start': None, 'end': None, 'equals': '4'}
+end of pass 2
+###############
+
+$displacement
+121.0 <= $displacement <= 301.0 : 0.387
+302.0 <= $displacement <= 455.0 : 0.125
+$horsepower
+67.0 <= $horsepower <= 129.0 : 0.390
+130.0 <= $horsepower <= 230.0 : 0.121
+$model
+70.0 <= $model <= 74.0 : 0.183
+75.0 <= $model <= 82.0 : 0.328
+%cylinders = {'8', '6', '5'}
+%cylinders = 8 : 0.137
+%cylinders = 6 : 0.399
+%cylinders = 5 : 0.663
+origin = {'1', '2'}
+origin = 1 : 0.246
+origin = 2 : 0.509
+
+best cut is: {'score': 0.6633333333333337, 'type': 'symbolic', 'column': '%cylinders', 'start': None, 'end': None, 'equals': '5'}
+end of pass 3
+###############
+
+$displacement
+145.0 <= $displacement <= 301.0 : 0.375
+302.0 <= $displacement <= 455.0 : 0.122
+$horsepower
+72.0 <= $horsepower <= 132.0 : 0.379
+133.0 <= $horsepower <= 230.0 : 0.119
+$model
+70.0 <= $model <= 74.0 : 0.182
+75.0 <= $model <= 82.0 : 0.316
+%cylinders = {'8', '6'}
+%cylinders = 8 : 0.137
+%cylinders = 6 : 0.399
+origin = {'1', '2'}
+origin = 1 : 0.246
+origin = 2 : 0.393
+
+best cut is: {'score': 0.39909090909090944, 'type': 'symbolic', 'column': '%cylinders', 'start': None, 'end': None, 'equals': '6'}
+end of pass 4
+###############
+
+##################################################################
+
+FFT for weatherLong
+$temp
+64.0 <= $temp <= 71.0 : 0.441
+72.0 <= $temp <= 85.0 : 0.419
+%outlook = {'over', 'rainy', 'sunny'}
+%outlook = over : 0.544
+%outlook = rainy : 0.353
+%outlook = sunny : 0.416
+wind = {'FALSE', 'TRUE'}
+wind = FALSE : 0.395
+wind = TRUE : 0.477
+!play = {'yes', 'no'}
+!play = yes : 0.498
+!play = no : 0.307
+
+best cut is: {'score': 0.5437500000000003, 'type': 'symbolic', 'column': '%outlook', 'start': None, 'end': None, 'equals': 'over'}
+end of pass 1
+###############
+
+$temp
+65.0 <= $temp <= 71.0 : 0.386
+72.0 <= $temp <= 85.0 : 0.383
+%outlook = {'rainy', 'sunny'}
+%outlook = rainy : 0.353
+%outlook = sunny : 0.416
+wind = {'FALSE', 'TRUE'}
+wind = FALSE : 0.357
+wind = TRUE : 0.426
+!play = {'yes', 'no'}
+!play = yes : 0.462
+!play = no : 0.307
+
+best cut is: {'score': 0.4620000000000003, 'type': 'symbolic', 'column': '!play', 'start': None, 'end': None, 'equals': 'yes'}
+end of pass 2
+###############
+
+$temp
+65.0 <= $temp <= 71.0 : 0.342
+72.0 <= $temp <= 85.0 : 0.272
+%outlook = {'rainy', 'sunny'}
+%outlook = rainy : 0.403
+%outlook = sunny : 0.243
+wind = {'FALSE', 'TRUE'}
+wind = FALSE : 0.263
+wind = TRUE : 0.337
+!play = {'no'}
+!play = no : 0.307
+
+best cut is: {'score': 0.4025000000000002, 'type': 'symbolic', 'column': '%outlook', 'start': None, 'end': None, 'equals': 'rainy'}
+end of pass 3
+###############
+
+$temp
+72.0 <= $temp <= 79.0 : 0.127
+80.0 <= $temp <= 85.0 : 0.360
+%outlook = {'sunny'}
+%outlook = sunny : 0.243
+wind = {'FALSE', 'TRUE'}
+wind = FALSE : 0.263
+wind = TRUE : 0.205
+!play = {'no'}
+!play = no : 0.243
+
+best cut is: {'score': 0.36000000000000015, 'type': 'numeric', 'column': '$temp', 'start': 80.0, 'end': 85.0, 'equals': None}
+end of pass 4
+###############
+
+
+Process finished with exit code 0

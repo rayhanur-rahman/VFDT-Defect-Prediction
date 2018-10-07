@@ -70,4 +70,4 @@ class Dom:
             pt.add_row(list)
 
         # print(pt)
-        return [filteredData, pt]
+        return [filteredData, pt, table]

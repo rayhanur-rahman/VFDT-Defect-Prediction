@@ -1,4 +1,4 @@
-import csv, Num, Sym, math, prettytable
+import csv, Num, Sym, math, prettytable, re
 
 class TableLoader:
     def __init__(self, csvfile):
@@ -14,6 +14,7 @@ class TableLoader:
         self.toBeParsedToInt = []
         self.independents=[]
         self.dependents = []
+        self.symbolicIndependents = []
         self.minimizetionGoal = []
         self.maximizationGoal = []
         self.titles = []
@@ -21,6 +22,7 @@ class TableLoader:
         self.listOfDataAsDictionary = []
 
     def processLine(self, row):
+        pattern = re.compile("^[A-Za-z0-9]+$")
         dictionary = {}
         for index in range(0, len(row)):
             item = row[index].strip()
@@ -48,8 +50,11 @@ class TableLoader:
                         self.status[item] = "dependent"
                     if '!' in item:
                         self.isClass[item] = True
+                        self.symbolicIndependents.append(index)
                     if '%' in item:
-                        pass
+                        self.symbolicIndependents.append(index)
+                    if pattern.match(item):
+                        self.symbolicIndependents.append(index)
             if index not in self.toBeIgnored:
                 if self.line_count == 1:
                     if index not in self.toBeParsedToInt:
