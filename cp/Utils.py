@@ -22,21 +22,23 @@ def csvRowsGenerator(csvfile):
         for row in csv_reader:
             yield row
 
-list = [64,64,72,72,81,81,83,83,69,69,65,65,75,75,75,75,68,68,85,85,80,80,71,71,72,72,70,70]
-
 def getDiscretizedRange(data, attribute):
     list = []
     for item in data:
         list.append(item[attribute])
     cuts = []
+    cutIndexs = []
     list.sort()
     enough = math.pow(len(list), 0.5)
     queue = []
+    indexQueue = []
     queue.append(list)
+    indexQueue.append(0)
     discretizedData = []
 
     while len(queue) != 0:
         poppedItem = queue.pop(0)
+        poppedIndex = indexQueue.pop(0)
         low = 0
         high = len(poppedItem)
         min = sys.maxsize
@@ -59,6 +61,7 @@ def getDiscretizedRange(data, attribute):
             count = count + 1
         if cutIndex is not None:
             cuts.append(poppedItem[cutIndex])
+            cutIndexs.append(poppedIndex + cutIndex)
             list1 = []
             list2 = []
             for index in range(0, len(poppedItem)):
@@ -67,12 +70,36 @@ def getDiscretizedRange(data, attribute):
                 else:
                     list2.append(poppedItem[index])
 
-            if len(list1) > 0: queue.append(list1)
-            if len(list2) > 0: queue.append(list2)
+            if len(list1) > 0:
+                queue.append(list1)
+                indexQueue.append(poppedIndex)
+            if len(list2) > 0:
+                queue.append(list2)
+                indexQueue.append(cutIndex+1)
 
 
     cuts.sort()
-    return cuts
+    cutIndexs.sort()
+    # print(cutIndexs)
+    minRange = []
+    maxRange = []
+    cutIndex = 0
+    listIndex  = 0
+    minIndex = 0
+    for item in list:
+        if item == cuts[cutIndex]:
+            minRange.append(list[minIndex])
+            maxRange.append(cuts[cutIndex])
+            cutIndex = cutIndex + 1
+            minIndex = listIndex + 1
+            if cutIndex == len(cuts):
+                break
+        listIndex = listIndex + 1
+    if maxRange[-1] is not list[-1]:
+        minRange.append(list[minIndex])
+        maxRange.append(list[-1])
+    # print(f'---  {cuts} {minRange} {maxRange}')
+    return minRange, maxRange, cuts
 
 def getFromSetByIndex(set, index):
     count = 0
@@ -81,3 +108,191 @@ def getFromSetByIndex(set, index):
             return item
         count = count + 1
     return
+
+
+def getBestSplitNumeric(list, attributeName):
+    list.sort(key=lambda k: k[attributeName])
+    unique = Utils.retrieveSet(list, 'class')
+    ranges = Utils.getDiscretizedRange(list, attributeName)
+
+    totalMatrix = [0] * len(unique)
+    for itemIndex in list:
+        for index in range(0, len(unique)):
+            if itemIndex['class'] == Utils.getFromSetByIndex(unique, index):
+                totalMatrix[index] = totalMatrix[index] + 1
+
+    bestSplit = {
+        'attribute': attributeName,
+        'type' : 'numeric',
+        'min' : None,
+        'max': None,
+        'entropy': sys.maxsize,
+        'averageEntropy': None
+    }
+
+    chunks = []
+
+    averageEntropy = 0
+
+    for itemIndex in range(0, len(ranges[0])):
+        countMatrix = [0] * len(unique)
+        for element in list:
+            if ranges[0][itemIndex] <= element[attributeName] <= ranges[1][itemIndex]:
+                for index in range(0, len(unique)):
+                    if element['class'] == Utils.getFromSetByIndex(unique, index):
+                        countMatrix[index] = countMatrix[index] + 1
+
+        entropy = 0
+        total = sum(countMatrix)
+        for index in range(0, len(unique)):
+            p = (countMatrix[index] + .001) / (total + .001)
+            entropy = entropy - p * math.log(p, len(unique))
+        # print(f'{ranges[0][itemIndex]} {ranges[1][itemIndex]} {entropy}')
+
+        averageEntropy = averageEntropy + entropy
+
+        if entropy < bestSplit['entropy']:
+            bestSplit['min'] = ranges[0][itemIndex]
+            bestSplit['max'] = ranges[1][itemIndex]
+            bestSplit['entropy'] = entropy
+
+        chunk = {
+            'attribute': attributeName,
+            'type': 'numeric',
+            'min': ranges[0][itemIndex],
+            'max': ranges[1][itemIndex],
+            'entropy': entropy
+        }
+        chunks.append(chunk)
+
+    bestSplit['averageEntropy'] = averageEntropy/len(ranges[0])
+    # print(f'{bestSplit}')
+    return bestSplit, chunks
+
+def getBestSplitCategorical(list, attributeName):
+    list.sort(key=lambda k: k[attributeName])
+    unique = Utils.retrieveSet(list, 'class')
+    ranges = Utils.retrieveSet(list, attributeName)
+
+    totalMatrix = [0] * len(unique)
+    for item in list:
+        for index in range(0, len(unique)):
+            if item['class'] == Utils.getFromSetByIndex(unique, index):
+                totalMatrix[index] = totalMatrix[index] + 1
+
+    bestSplit = {
+        'attribute' : attributeName,
+        'type': 'categorical',
+        'value' : None,
+        'entropy': sys.maxsize,
+        'averageEntropy': None
+    }
+
+    chunks = []
+
+    averageEntropy = 0
+
+    for item in ranges:
+        countMatrix = [0] * len(unique)
+        for element in list:
+            if element[attributeName] == item:
+                for index in range(0, len(unique)):
+                    if element['class'] == Utils.getFromSetByIndex(unique, index):
+                        countMatrix[index] = countMatrix[index] + 1
+
+        entropy = 0
+        total = sum(countMatrix)
+        for index in range(0, len(unique)):
+            p = (countMatrix[index] + .001)/(total + .001)
+            entropy = entropy - p*math.log(p, len(unique))
+        # print(f'{item} {entropy}')
+
+        averageEntropy = averageEntropy + entropy
+
+        if entropy < bestSplit['entropy']:
+            bestSplit['value'] = item
+            bestSplit['entropy'] = entropy
+
+        chunk = {
+            'attribute': attributeName,
+            'type': 'categorical',
+            'value': item,
+            'entropy': entropy
+        }
+        chunks.append(chunk)
+
+    bestSplit['averageEntropy'] = averageEntropy/len(ranges)
+    # print(f'{bestSplit}')
+    return bestSplit, chunks
+
+def FFT(list, chunks):
+    chunks.sort(key=lambda k: k['entropy'])
+    chunk = chunks.pop(0)
+    # chunk = chunks.pop(0)
+    attributeName = chunk['attribute']
+
+    unique = Utils.retrieveSet(list, 'class')
+    total = 0
+
+    classMatrix = ['']*len(unique)
+    nodeStatistics = None
+
+    classMatrixIndex = 0
+    for item in unique:
+        classMatrix[classMatrixIndex] = item
+        classMatrixIndex = classMatrixIndex + 1
+
+    countMatrix = [0]*len(unique)
+    probabilityIndex = [0]*len(unique)
+
+    newList = []
+    if chunk['type'] == 'categorical':
+        for item in list:
+            if item[attributeName] == chunk['value'] :
+                total = total + 1
+                for index in range(0, len(unique)):
+                    if item['class'] == Utils.getFromSetByIndex(unique, index):
+                        countMatrix[index] = countMatrix[index] + 1
+            else:
+                newList.append(item)
+
+        nodeStatistics = {
+            'attribute': attributeName,
+            'type': 'categorical',
+            'value': chunk['value'],
+            'class': classMatrix,
+            'probability': None
+        }
+
+        for index in range(0, len(probabilityIndex)):
+            probabilityIndex[index] = (countMatrix[index] + .001) / (total + .001)
+
+        nodeStatistics['probability'] = probabilityIndex
+
+    if chunk['type'] == 'numeric':
+        for item in list:
+            if chunk['min'] <= item[attributeName] <= chunk['max'] :
+                total = total + 1
+                for index in range(0, len(unique)):
+                    if item['class'] == Utils.getFromSetByIndex(unique, index):
+                        countMatrix[index] = countMatrix[index] + 1
+            else:
+                newList.append(item)
+
+        nodeStatistics = {
+            'attribute': attributeName,
+            'type': 'numeric',
+            'min': chunk['min'],
+            'max': chunk['max'],
+            'class': classMatrix,
+            'probability': None
+        }
+
+        for index in range(0, len(probabilityIndex)):
+            probabilityIndex[index] = (countMatrix[index] + .001) / (total + .001)
+
+        nodeStatistics['probability'] = probabilityIndex
+
+    # print(f'{len(newList)} {nodeStatistics}')
+    return newList, chunks, nodeStatistics
+
