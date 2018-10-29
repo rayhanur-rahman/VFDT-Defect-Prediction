@@ -39,7 +39,7 @@ def readRowsLineByLine(csvFile, classIndex):
         root.categorical = categorical
 
         if root.deadEnd == False:
-            Node.visitTree(root, dictionary)
+            Node.visitTree(root, dictionary, minDepth=3, pushExamplesToLeaf=False, isAdaptive=False)
 
         else:
             print(f'finished building the tree with {streamIndex} exaples')
