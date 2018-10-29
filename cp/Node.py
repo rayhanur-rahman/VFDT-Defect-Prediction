@@ -15,18 +15,24 @@ class Node:
         self.ignoredAttribute = []
         self.classIndex = None
         self.probabilityIndex = None
+        self.deadEnd = False
+        self.numeric = []
+        self.categorical = []
         return
 
-def preOrder(node, list):
-    # print(f'{node.name} {node.attribute} {node.split} {node.ignoredAttribute}')
-    # print(f'{node.name} # {node.attribute} # {node.split} # {node.ignoredAttribute}')
-    list.append(node)
+def preOrder(node):
+    if len(node.children) == 0:
+        print(f'{len(node.examples)} # {node.classIndex} # {node.probabilityIndex} # {node.name}')
+        # print(f'{node.name} {node.attribute} {node.split} {node.ignoredAttribute}')
+        # print(f'{node.name} # {node.attribute} # {node.split} # {node.ignoredAttribute}')
+        # print(f'{len(node.examples)} {node.classIndex} {node.probabilityIndex}')
     if len(node.children) > 0:
         for child in node.children:
-            preOrder(child, list)
-    return list
+            preOrder(child)
+    return
 
-def visitTree(node, example, numeric, categorical):
+def visitTree(node, example):
+
     if len(node.children) == 0:
         node.examples.append(example)
 
@@ -55,26 +61,26 @@ def visitTree(node, example, numeric, categorical):
         chunks = []
 
         # print(f'1 {node.ignoredAttribute}')
-        # print(f'2 {numeric}')
+        # print(f'2 {node.numeric}')
         # print(f'3 {categorical}')
         #
         for attr in node.ignoredAttribute:
             if attr['type'] == 'categorical':
-                if attr['name'] in categorical: categorical.remove(attr['name'])
+                if attr['name'] in node.categorical: node.categorical.remove(attr['name'])
             if attr['type'] == 'numeric':
-                if attr['name'] in numeric: numeric.remove(attr['name'])
+                if attr['name'] in node.numeric: node.numeric.remove(attr['name'])
 
-        # print(f'4 {numeric}')
+        # print(f'4 {node.numeric}')
         # print(f'5 {categorical}')
         # print('###\n')
 
-        for item in numeric:
+        for item in node.numeric:
             out = Utils.getBestSplitNumeric(node.examples, item)
             splits.append(out[0])
             for item in out[1]:
                 chunks.append(item)
 
-        for item in categorical:
+        for item in node.categorical:
             out = Utils.getBestSplitCategorical(node.examples, item)
             splits.append(out[0])
             for item in out[1]:
@@ -82,13 +88,24 @@ def visitTree(node, example, numeric, categorical):
 
         splits.sort(key=lambda k: k['averageEntropy'])
 
-        if len(splits) > 1:
+        numberOfTotalAttributes = len(node.ignoredAttribute) + len(node.categorical) + len(node.numeric)
+
+        # if len(node.ignoredAttribute) >= math.sqrt((numberOfTotalAttributes)):
+        if len(node.ignoredAttribute) >= 3:
+            if len(node.examples) > 49:
+                node.deadEnd = True
+            criticalPoint = 0
+
+        elif len(splits) > 1:
             min = splits[0]['averageEntropy']
             max = splits[1]['averageEntropy']
             criticalPoint = (max - min)
-        else:
+
+        elif len(splits) <= 1:
             criticalPoint = 0
-            print(f'all attribute processed')
+            node.deadEnd = True
+
+
 
         delta = .05
         unique = Utils.retrieveSet(node.examples, 'class')
@@ -115,6 +132,10 @@ def visitTree(node, example, numeric, categorical):
                     child.name = child.parent.name + ' .. ' + str(child.split['min']) + ' <= ' + child.split['attribute'] + ' <= ' + str(child.split['max'])
                     for attr in node.ignoredAttribute:
                         child.ignoredAttribute.append(attr)
+                    for element in node.numeric:
+                        child.numeric.append(element)
+                    for element in node.categorical:
+                        child.categorical.append(element)
                     node.children.append(child)
                     node.classIndex = None
                     node.probabilityIndex = None
@@ -133,6 +154,10 @@ def visitTree(node, example, numeric, categorical):
                     child.name = child.parent.name + ' .. ' + child.split['attribute'] + ' == ' + str(child.split['value'])
                     for attr in node.ignoredAttribute:
                         child.ignoredAttribute.append(attr)
+                    for element in node.numeric:
+                        child.numeric.append(element)
+                    for element in node.categorical:
+                        child.categorical.append(element)
                     node.children.append(child)
                     node.classIndex = None
                     node.probabilityIndex = None
@@ -140,18 +165,30 @@ def visitTree(node, example, numeric, categorical):
 
         return
 
+    elif node.deadEnd: return
+
     else:
+
+        numberOfDeadEnds = 0
+        for child in node.children:
+            if child.deadEnd: numberOfDeadEnds = numberOfDeadEnds + 1
+
+        if numberOfDeadEnds == len(node.children):
+            node.deadEnd = True
+
         if node.attribute['type'] == 'categorical':
             exampleAttributeValue = example[node.attribute['name']]
             for child in node.children:
                 if child.split['value'] == exampleAttributeValue:
-                    visitTree(child, example, numeric, categorical)
+                    visitTree(child, example)
                     break
         if node.attribute['type'] == 'numeric':
             exampleAttributeValue = example[node.attribute['name']]
             for child in node.children:
                 if child.split['min'] <= exampleAttributeValue <= child.split['max']:
-                    visitTree(child, example, numeric, categorical)
+                    visitTree(child, example)
                     break
+
+    return
 
 

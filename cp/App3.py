@@ -35,16 +35,25 @@ def readRowsLineByLine(csvFile, classIndex):
             attributeIndex = attributeIndex + 1
         list.append(dictionary)
 
-        Node.visitTree(root, dictionary, numeric, categorical)
+        root.numeric = numeric
+        root.categorical = categorical
 
+        if root.deadEnd == False:
+            Node.visitTree(root, dictionary)
+
+        else:
+            print(f'finished building the tree with {streamIndex} exaples')
+            break
 
         streamIndex = streamIndex + 1
 
         if streamIndex%10000 is 0:
             pass
-            break
+            print(f'{streamIndex} examples processed so far...')
+            # Node.preOrder(root)
+            # print(f'#############################\n')
 
-    return list, chunks
+    return list, chunks, root
 
 result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
 # result = readRowsLineByLine("iris.csv", classIndex=4)
@@ -53,7 +62,5 @@ result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", clas
 # result = readRowsLineByLine("data.csv", classIndex=0)
 
 
+x = Node.preOrder(root)
 
-x = Node.preOrder(root, [])
-
-z = 1
