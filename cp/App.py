@@ -6,17 +6,17 @@ from sklearn.metrics import accuracy_score
 from sklearn import tree
 from sklearn.metrics import classification_report, confusion_matrix
 
-balance_data = pd.read_csv('d.csv',sep= ',', header=None)
+balance_data = pd.read_csv('iris.csv',sep= ',', header=None)
 
 # print(balance_data.dtypes)
 
 print(balance_data.shape)
 
 
-X = balance_data.values[:, 1:5]
-Y = balance_data.values[:,0]
+X = balance_data.values[:, 0:4]
+Y = balance_data.values[:,4]
 
-X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.3, random_state = 100)
+X_train, X_test, y_train, y_test = train_test_split( X, Y, test_size = 0.2, random_state = 100)
 
 clf_entropy = DecisionTreeClassifier(criterion = "entropy",
                                      random_state = 100,

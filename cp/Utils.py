@@ -23,26 +23,18 @@ def csvRowsGenerator(csvfile):
             yield row
 
 def getDiscretizedRange(data, attribute):
+    if len(data) == 0: return None, None, None
     list = []
     for item in data:
         list.append(item[attribute])
     cuts = []
-    cutIndexs = []
     list.sort()
     enough = math.pow(len(list), 0.5)
     queue = []
-    indexQueue = []
     queue.append(list)
-    indexQueue.append(0)
-    discretizedData = []
 
     while len(queue) != 0:
         poppedItem = queue.pop(0)
-        poppedIndex = indexQueue.pop(0)
-        low = 0
-        high = len(poppedItem)
-        min = sys.maxsize
-        max = -sys.maxsize
         num1 = Num.Num("", None)
         num2 = Num.Num("", None)
         for item in poppedItem:
@@ -61,7 +53,6 @@ def getDiscretizedRange(data, attribute):
             count = count + 1
         if cutIndex is not None:
             cuts.append(poppedItem[cutIndex])
-            cutIndexs.append(poppedIndex + cutIndex)
             list1 = []
             list2 = []
             for index in range(0, len(poppedItem)):
@@ -72,33 +63,34 @@ def getDiscretizedRange(data, attribute):
 
             if len(list1) > 0:
                 queue.append(list1)
-                indexQueue.append(poppedIndex)
             if len(list2) > 0:
                 queue.append(list2)
-                indexQueue.append(cutIndex+1)
 
 
     cuts.sort()
-    cutIndexs.sort()
-    # print(cutIndexs)
     minRange = []
     maxRange = []
     cutIndex = 0
     listIndex  = 0
     minIndex = 0
-    for item in list:
-        if item == cuts[cutIndex]:
+
+    if len(cuts) > 0:
+        for item in list:
+            if item == cuts[cutIndex]:
+                minRange.append(list[minIndex])
+                maxRange.append(cuts[cutIndex])
+                cutIndex = cutIndex + 1
+                minIndex = listIndex + 1
+                if cutIndex == len(cuts):
+                    break
+            listIndex = listIndex + 1
+        if maxRange[-1] is not list[-1]:
             minRange.append(list[minIndex])
-            maxRange.append(cuts[cutIndex])
-            cutIndex = cutIndex + 1
-            minIndex = listIndex + 1
-            if cutIndex == len(cuts):
-                break
-        listIndex = listIndex + 1
-    if maxRange[-1] is not list[-1]:
-        minRange.append(list[minIndex])
+            maxRange.append(list[-1])
+    else:
+        minRange.append(list[0])
         maxRange.append(list[-1])
-    # print(f'---  {cuts} {minRange} {maxRange}')
+    # print(f'{cuts} {minRange} {maxRange}')
     return minRange, maxRange, cuts
 
 def getFromSetByIndex(set, index):
@@ -108,7 +100,6 @@ def getFromSetByIndex(set, index):
             return item
         count = count + 1
     return
-
 
 def getBestSplitNumeric(list, attributeName):
     list.sort(key=lambda k: k[attributeName])
@@ -146,10 +137,8 @@ def getBestSplitNumeric(list, attributeName):
         total = sum(countMatrix)
         for index in range(0, len(unique)):
             p = (countMatrix[index] + .001) / (total + .001)
-            entropy = entropy - p * math.log(p, len(unique))
-        # print(f'{ranges[0][itemIndex]} {ranges[1][itemIndex]} {entropy}')
-
-        averageEntropy = averageEntropy + entropy
+            if p == 1 and len(unique) == 1: entropy = entropy - 0
+            else: entropy = entropy - p * math.log(p, len(unique))
 
         if entropy < bestSplit['entropy']:
             bestSplit['min'] = ranges[0][itemIndex]
@@ -163,9 +152,12 @@ def getBestSplitNumeric(list, attributeName):
             'max': ranges[1][itemIndex],
             'entropy': entropy
         }
+
+        averageEntropy = averageEntropy + entropy*(total/len(list))
+
         chunks.append(chunk)
 
-    bestSplit['averageEntropy'] = averageEntropy/len(ranges[0])
+    bestSplit['averageEntropy'] = averageEntropy
     # print(f'{bestSplit}')
     return bestSplit, chunks
 
@@ -204,10 +196,8 @@ def getBestSplitCategorical(list, attributeName):
         total = sum(countMatrix)
         for index in range(0, len(unique)):
             p = (countMatrix[index] + .001)/(total + .001)
-            entropy = entropy - p*math.log(p, len(unique))
-        # print(f'{item} {entropy}')
-
-        averageEntropy = averageEntropy + entropy
+            if p == 1 and len(unique) == 1: entropy = entropy - 0
+            else: entropy = entropy - p * math.log(p, len(unique))
 
         if entropy < bestSplit['entropy']:
             bestSplit['value'] = item
@@ -219,9 +209,11 @@ def getBestSplitCategorical(list, attributeName):
             'value': item,
             'entropy': entropy
         }
+
+        averageEntropy = averageEntropy + entropy * (total / len(list))
         chunks.append(chunk)
 
-    bestSplit['averageEntropy'] = averageEntropy/len(ranges)
+    bestSplit['averageEntropy'] = averageEntropy
     # print(f'{bestSplit}')
     return bestSplit, chunks
 
