@@ -1,9 +1,5 @@
 import csv, re, Utils, math, sys
 
-
-
-
-
 def readRowsLineByLine(csvFile, classIndex):
     list = []
     numeric = []
@@ -38,7 +34,7 @@ def readRowsLineByLine(csvFile, classIndex):
         list.append(dictionary)
         streamIndex = streamIndex + 1
 
-        if streamIndex%10000 is 0:
+        if streamIndex%120 is 0:
             pass
 
             splits = []
@@ -81,8 +77,11 @@ def readRowsLineByLine(csvFile, classIndex):
 
 
 
-result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
+# result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
+result = readRowsLineByLine("iris.csv", classIndex=4)
+# result = readRowsLineByLine("weatherLong.csv", classIndex=4)
 # result = readRowsLineByLine("d.csv", classIndex=0)
+# result = readRowsLineByLine("data.csv", classIndex=0)
 
 list = result[0]
 chunks = result[1]
@@ -157,7 +156,10 @@ def readTestData(csvFile, classIndex):
     return list
 
 
-testList = readTestData('test.csv', 0)
+# testList = readTestData('test.csv', 0)
+# testList = readTestData('test2.csv', 0)
+testList = readTestData('test3.csv', 4)
+
 
 testData = testList
 

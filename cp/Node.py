@@ -112,6 +112,7 @@ def adaptForMissingSplits(node, example, minDepth, pushExamplesToLeaf, isAdaptiv
     return
 
 def checkBound(node, minDepth):
+
     splits = []
     chunks = []
 
@@ -150,11 +151,18 @@ def checkBound(node, minDepth):
     epsilon = math.log(len(unique), math.e) * math.sqrt((math.log(1 / delta, math.e)) / len(node.examples))
     return epsilon, criticalPoint, splits
 
+
+
+
+
+
 def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
 
     if len(node.children) == 0:
         node.examples.append(example)
         node.exampleCount = node.exampleCount + 1
+
+        # if len(node.examples) < 10: return
 
         # build statistics
         computeStatistics(node)
@@ -249,4 +257,53 @@ def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
 
     return
 
+def visiTreeForTest(node, example, hits, miss):
+    if len(node.children) == 0:
 
+        maxProbability = -sys.maxsize
+        maxProbabilityIndex = None
+        for pIndex in range(0, len(node.probabilityIndex)):
+            if node.probabilityIndex[pIndex] > maxProbability:
+                maxProbability = node.probabilityIndex[pIndex]
+                maxProbabilityIndex = pIndex
+        predictedClass = node.classIndex[maxProbabilityIndex]
+
+        if predictedClass == example['class']:
+            hits.append(1)
+        else:
+            miss.append(1)
+
+        return
+
+    else:
+        if node.attribute['type'] == 'categorical':
+            exampleAttributeValue = example[node.attribute['name']]
+            for child in node.children:
+                if child.split['value'] == exampleAttributeValue:
+                    visiTreeForTest(child, example, hits, miss)
+                    return
+
+
+        if node.attribute['type'] == 'numeric':
+            exampleAttributeValue = example[node.attribute['name']]
+            for child in node.children:
+                if child.split['min'] <= exampleAttributeValue <= child.split['max']:
+                    visiTreeForTest(child, example, hits, miss)
+                    return
+
+        # calc
+        # result = []
+        maxProbability = -sys.maxsize
+        maxProbabilityIndex = None
+        for pIndex in range(0, len(node.probabilityIndex)):
+            if node.probabilityIndex[pIndex] > maxProbability:
+                maxProbability = node.probabilityIndex[pIndex]
+                maxProbabilityIndex = pIndex
+        predictedClass = node.classIndex[maxProbabilityIndex]
+
+        if predictedClass == example['class']:
+            hits.append(1)
+        else:
+            miss.append(1)
+
+    return
