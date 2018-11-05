@@ -1,4 +1,4 @@
-import csv, re, Utils, Num, Sym, math, sys
+import csv, re, Utils, Num, Sym, math, sys, timeit, numpy
 
 
 def retrieveSet(data, attributeName):
@@ -23,7 +23,8 @@ def csvRowsGenerator(csvfile):
             yield row
 
 def getDiscretizedRange(data, attribute):
-    if len(data) == 0: return None, None, None
+    length = len(data)
+    if length == 0: return None, None, None
     list = []
     for item in data:
         list.append(item[attribute])
@@ -93,6 +94,31 @@ def getDiscretizedRange(data, attribute):
     # print(f'{cuts} {minRange} {maxRange}')
     return minRange, maxRange, cuts
 
+
+def getDiscretizedRangeNumPy(data, attribute):
+    length = len(data)
+    if length == 0: return None, None, None
+    list = []
+    for item in data:
+        list.append(item[attribute])
+    enough = math.pow(len(list), 0.5)
+    # hist, bin_edges = numpy.histogram(list, bins=int( math.floor(enough) ))
+    hist, bin_edges = numpy.histogram(list, bins=int( 3 ))
+
+
+    minRange = []
+    maxRange = []
+    cuts = []
+
+    for index in range(0, len(bin_edges)):
+        cuts.append(int(bin_edges[index]))
+        if index != len(bin_edges) - 1: minRange.append(int(bin_edges[index]))
+        if index != 0: maxRange.append(int(bin_edges[index]))
+
+    cuts = cuts[1:-1]
+    return minRange, maxRange, cuts
+
+
 def getFromSetByIndex(set, index):
     count = 0
     for item in set:
@@ -105,6 +131,11 @@ def getBestSplitNumeric(list, attributeName):
     list.sort(key=lambda k: k[attributeName])
     unique = Utils.retrieveSet(list, 'class')
     ranges = Utils.getDiscretizedRange(list, attributeName)
+
+    rangeDictionary = {
+        'min': ranges[0],
+        'max': ranges[1]
+    }
 
     totalMatrix = [0] * len(unique)
     for itemIndex in list:
@@ -159,12 +190,14 @@ def getBestSplitNumeric(list, attributeName):
 
     bestSplit['averageEntropy'] = averageEntropy
     # print(f'{bestSplit}')
-    return bestSplit, chunks
+    return bestSplit, chunks, rangeDictionary
 
 def getBestSplitCategorical(list, attributeName):
     list.sort(key=lambda k: k[attributeName])
     unique = Utils.retrieveSet(list, 'class')
     ranges = Utils.retrieveSet(list, attributeName)
+
+
 
     totalMatrix = [0] * len(unique)
     for item in list:
@@ -288,3 +321,43 @@ def FFT(list, chunks):
     # print(f'{len(newList)} {nodeStatistics}')
     return newList, chunks, nodeStatistics
 
+def calCulateFMeasure(predictioMatrix):
+    classes = []
+    predictedClasses = []
+    outcome = []
+    for item in predictioMatrix:
+        classes.append(item[0])
+        predictedClasses.append(item[1])
+        outcome.append(item[2])
+
+    uniqueClasses = set(classes)
+
+    TP = [0] * len(uniqueClasses)
+    TN = [0] * len(uniqueClasses)
+    FP = [0] * len(uniqueClasses)
+    FN = [0] * len(uniqueClasses)
+
+    # for 1
+    for uniqueClassIndex in range(0, len(uniqueClasses)):
+        for index in range(0, len(predictedClasses)):
+            if classes[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) and \
+                    predictedClasses[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and outcome[index] == True:
+                TP[uniqueClassIndex] += 1
+            if classes[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) and \
+                    predictedClasses[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and outcome[index] == True:
+                TN[uniqueClassIndex] += 1
+            if classes[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and predictedClasses[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and outcome[index] == False:
+                FP[uniqueClassIndex] += 1
+            if classes[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and predictedClasses[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
+                    and outcome[index] == False:
+                FN[uniqueClassIndex] += 1
+
+    print(f'{ TP[0] / (TP[0] + FP[0] + .001) }')
+    print(f'{ TP[0] / (TP[0] + FN[0] + .001) }')
+    print(f'{ TP[1] / (TP[1] + FP[1] + .001) }')
+    print(f'{ TP[1] / (TP[1] + FN[1] + .001) }')

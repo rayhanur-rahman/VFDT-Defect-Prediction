@@ -1,4 +1,5 @@
-import math, random, sys, Num, Sym, Utils
+import math, random, sys, Num, Sym, Utils, timeit
+
 
 class Node:
 
@@ -8,18 +9,19 @@ class Node:
             'name': None,
             'type': None
         }
-        self.split = None #information of the best split so far
+        self.split = None  # information of the best split so far
         self.parent = None
-        self.children = [] #list of Nodes
+        self.children = []  # list of Nodes
         self.examples = []
         self.ignoredAttribute = []
-        self.classIndex = None
-        self.probabilityIndex = None
+        self.classIndex = []
+        self.probabilityIndex = []
         self.exampleCount = 0
         self.deadEnd = False
         self.numeric = []
         self.categorical = []
         return
+
 
 def preOrder(node):
     print(f'{node.exampleCount} # {node.classIndex} # {node.probabilityIndex} # {node.name}')
@@ -28,18 +30,19 @@ def preOrder(node):
             preOrder(child)
     return
 
-def computeStatistics(node):
-    unique = Utils.retrieveSet(node.examples, 'class')
-    classMatrix = [''] * len(unique)
-    probabilityIndex = [0] * len(unique)
+
+def computeStatistics(node, numberOfClasses):
+    # unique = Utils.retrieveSet(node.examples, 'class')
+    classMatrix = [''] * len(numberOfClasses)
+    probabilityIndex = [0] * len(numberOfClasses)
     classMatrixIndex = 0
-    for item in unique:
+    for item in numberOfClasses:
         classMatrix[classMatrixIndex] = item
         classMatrixIndex = classMatrixIndex + 1
-    totalMatrix = [0] * len(unique)
+    totalMatrix = [0] * len(numberOfClasses)
     for item in node.examples:
-        for index in range(0, len(unique)):
-            if item['class'] == Utils.getFromSetByIndex(unique, index):
+        for index in range(0, len(numberOfClasses)):
+            if item['class'] == Utils.getFromSetByIndex(numberOfClasses, index):
                 totalMatrix[index] = totalMatrix[index] + 1
     total = sum(totalMatrix)
     for index in range(0, len(probabilityIndex)):
@@ -47,6 +50,7 @@ def computeStatistics(node):
     node.classIndex = classMatrix
     node.probabilityIndex = probabilityIndex
     return
+
 
 def recomputeStatistics(node, example):
     classNameOfTheExample = example['class']
@@ -64,9 +68,10 @@ def recomputeStatistics(node, example):
         if item == classNameOfTheExample:
             priorCountMatrix[classMatrixIndex] += 1
         probabilityIndex[classMatrixIndex] = (priorCountMatrix[classMatrixIndex] + .001) / (
-                    node.exampleCount + 1 + .001)
+                node.exampleCount + 1 + .001)
         classMatrixIndex += 1
     return
+
 
 def adaptForMissingSplits(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
     if node.attribute['type'] == 'categorical':
@@ -111,10 +116,11 @@ def adaptForMissingSplits(node, example, minDepth, pushExamplesToLeaf, isAdaptiv
     print('still I can not catch')
     return
 
-def checkBound(node, minDepth):
 
+def checkBound(node, minDepth, numberOfClasses):
     splits = []
     chunks = []
+    rd = {}
 
     for attr in node.ignoredAttribute:
         if attr['type'] == 'categorical':
@@ -127,6 +133,7 @@ def checkBound(node, minDepth):
         splits.append(out[0])
         for item in out[1]:
             chunks.append(item)
+        rd[item['attribute']] = out[2]
 
     for item in node.categorical:
         out = Utils.getBestSplitCategorical(node.examples, item)
@@ -135,6 +142,8 @@ def checkBound(node, minDepth):
             chunks.append(item)
 
     splits.sort(key=lambda k: k['averageEntropy'])
+
+    criticalPoint = 0
 
     if len(node.ignoredAttribute) >= minDepth or len(splits) <= 1:
         if len(node.examples) > 49:
@@ -147,76 +156,95 @@ def checkBound(node, minDepth):
         criticalPoint = (max - min)
 
     delta = .05
-    unique = Utils.retrieveSet(node.examples, 'class')
-    epsilon = math.log(len(unique), math.e) * math.sqrt((math.log(1 / delta, math.e)) / len(node.examples))
-    return epsilon, criticalPoint, splits
-
-
-
-
+    epsilon = math.pow(2, -.5) * math.log(len(numberOfClasses), math.e) * math.sqrt(
+        (math.log(1 / delta, math.e)) / (len(node.examples)))
+    tau = math.log(len(numberOfClasses), math.e) * math.log(len(numberOfClasses), math.e) * math.log(1 / delta, math.e)
+    tau = tau / (.05 * .05)
+    tau = tau / 2
+    return epsilon, criticalPoint, splits, rd, tau
 
 
 def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
-
     if len(node.children) == 0:
         node.examples.append(example)
         node.exampleCount = node.exampleCount + 1
 
-        # if len(node.examples) < 10: return
+        # if len(node.examples) < 50: return
 
         # build statistics
-        computeStatistics(node)
+        numberOfClasses = Utils.retrieveSet(node.examples, 'class')
+        computeStatistics(node, numberOfClasses)
 
         # check for epsilon
-        result = checkBound(node, minDepth)
+        result = checkBound(node, minDepth, numberOfClasses)
+
         epsilon = result[0]
         criticalPoint = result[1]
         splits = result[2]
-        if epsilon - criticalPoint < 0:
-            bestAttribute = splits[0]
-            node.attribute['name'] = bestAttribute['attribute']
-            node.attribute['type'] = bestAttribute['type']
-            node.ignoredAttribute.append(node.attribute)
-            # ranges = None
-            if bestAttribute['type'] == 'numeric':
-                ranges = Utils.getDiscretizedRange(node.examples, bestAttribute['attribute'])
-                for index in range(0, len(ranges[0])):
-                    child = Node('')
-                    child.parent = node
-                    child.split = {
-                        'attribute': node.attribute['name'],
-                        'type': 'numeric',
-                        'min': ranges[0][index],
-                        'max': ranges[1][index]
-                    }
-                    child.name = child.parent.name + ' .. ' + str(child.split['min']) + ' <= ' + child.split['attribute'] + ' <= ' + str(child.split['max'])
-                    for attr in node.ignoredAttribute:
-                        child.ignoredAttribute.append(attr)
-                    for element in node.numeric:
-                        child.numeric.append(element)
-                    for element in node.categorical:
-                        child.categorical.append(element)
-                    node.children.append(child)
+        if len(numberOfClasses) > 1:
+            if epsilon - criticalPoint < 0 or node.exampleCount > result[4]:
+                bestAttribute = splits[0]
+                node.attribute['name'] = bestAttribute['attribute']
+                node.attribute['type'] = bestAttribute['type']
+                node.ignoredAttribute.append(node.attribute)
+                if bestAttribute['type'] == 'numeric':
+                    ranges = []
+                    ranges.append(result[3][bestAttribute['attribute']]['min'])
+                    ranges.append(result[3][bestAttribute['attribute']]['max'])
+
+                    for index in range(0, len(ranges[0])):
+                        child = Node('')
+                        child.parent = node
+                        child.split = {
+                            'attribute': node.attribute['name'],
+                            'type': 'numeric',
+                            'min': ranges[0][index],
+                            'max': ranges[1][index]
+                        }
+                        child.name = child.parent.name + ' .. ' + str(child.split['min']) + ' <= ' + child.split[
+                            'attribute'] + ' <= ' + str(child.split['max'])
+                        for attr in node.ignoredAttribute:
+                            child.ignoredAttribute.append(attr)
+                        for element in node.numeric:
+                            child.numeric.append(element)
+                        for element in node.categorical:
+                            child.categorical.append(element)
+                        node.children.append(child)
+
+                    for eg in node.examples:
+                        for child in node.children:
+                            if child.split['min'] <= eg[node.attribute['name']] <= child.split['max']:
+                                child.examples.append(eg)
+                                child.exampleCount += 1
+                    for child in node.children: computeStatistics(child, numberOfClasses)
                     node.examples = []
 
-            if bestAttribute['type'] == 'categorical':
-                ranges = Utils.retrieveSet(node.examples, bestAttribute['attribute'])
-                for item in ranges:
-                    child = Node('')
-                    child.parent = node
-                    child.split = {
-                        'attribute': node.attribute['name'],
-                        'type': 'categorical',
-                        'value': item,
-                    }
-                    child.name = child.parent.name + ' .. ' + child.split['attribute'] + ' == ' + str(child.split['value'])
-                    for attr in node.ignoredAttribute:
-                        child.ignoredAttribute.append(attr)
-                    for element in node.numeric:
-                        child.numeric.append(element)
-                    for element in node.categorical:
-                        child.categorical.append(element)
-                    node.children.append(child)
+                if bestAttribute['type'] == 'categorical':
+                    ranges = Utils.retrieveSet(node.examples, bestAttribute['attribute'])
+                    for item in ranges:
+                        child = Node('')
+                        child.parent = node
+                        child.split = {
+                            'attribute': node.attribute['name'],
+                            'type': 'categorical',
+                            'value': item,
+                        }
+                        child.name = child.parent.name + ' .. ' + child.split['attribute'] + ' == ' + str(
+                            child.split['value'])
+                        for attr in node.ignoredAttribute:
+                            child.ignoredAttribute.append(attr)
+                        for element in node.numeric:
+                            child.numeric.append(element)
+                        for element in node.categorical:
+                            child.categorical.append(element)
+                        node.children.append(child)
+
+                    for eg in node.examples:
+                        for child in node.children:
+                            if child.split['value'] == eg[node.attribute['name']]:
+                                child.examples.append(eg)
+                                child.exampleCount += 1
+                    for child in node.children: computeStatistics(child)
                     node.examples = []
 
         return
@@ -242,7 +270,6 @@ def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
                     visitTree(child, example, minDepth, pushExamplesToLeaf, isAdaptive)
                     return
 
-
         if node.attribute['type'] == 'numeric':
             exampleAttributeValue = example[node.attribute['name']]
             for child in node.children:
@@ -250,16 +277,18 @@ def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
                     visitTree(child, example, minDepth, pushExamplesToLeaf, isAdaptive)
                     return
 
-        if isAdaptive: adaptForMissingSplits(node, example, minDepth, pushExamplesToLeaf, isAdaptive)
+        if isAdaptive:
+            adaptForMissingSplits(node, example, minDepth, pushExamplesToLeaf, isAdaptive)
         else:
             recomputeStatistics(node, example)
             node.exampleCount += 1
 
     return
 
-def visiTreeForTest(node, example, hits, miss):
-    if len(node.children) == 0:
 
+def visiTreeForTest(node, example, hits, miss, predictionMatrix):
+    if len(node.children) == 0:
+        # print(f'{node.name} {node.probabilityIndex}')
         maxProbability = -sys.maxsize
         maxProbabilityIndex = None
         for pIndex in range(0, len(node.probabilityIndex)):
@@ -270,8 +299,10 @@ def visiTreeForTest(node, example, hits, miss):
 
         if predictedClass == example['class']:
             hits.append(1)
+            predictionMatrix.append((example['class'], predictedClass, True))
         else:
             miss.append(1)
+            predictionMatrix.append((example['class'], predictedClass, False))
 
         return
 
@@ -280,15 +311,14 @@ def visiTreeForTest(node, example, hits, miss):
             exampleAttributeValue = example[node.attribute['name']]
             for child in node.children:
                 if child.split['value'] == exampleAttributeValue:
-                    visiTreeForTest(child, example, hits, miss)
+                    visiTreeForTest(child, example, hits, miss, predictionMatrix)
                     return
-
 
         if node.attribute['type'] == 'numeric':
             exampleAttributeValue = example[node.attribute['name']]
             for child in node.children:
                 if child.split['min'] <= exampleAttributeValue <= child.split['max']:
-                    visiTreeForTest(child, example, hits, miss)
+                    visiTreeForTest(child, example, hits, miss, predictionMatrix)
                     return
 
         # calc
@@ -303,7 +333,9 @@ def visiTreeForTest(node, example, hits, miss):
 
         if predictedClass == example['class']:
             hits.append(1)
+            predictionMatrix.append((example['class'], predictedClass, True))
         else:
             miss.append(1)
+            predictionMatrix.append((example['class'], predictedClass, False))
 
     return

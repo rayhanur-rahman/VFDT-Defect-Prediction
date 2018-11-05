@@ -1,4 +1,4 @@
-import csv, re, Utils, math, sys, Node
+import csv, re, Utils, math, sys, Node, timeit
 
 root = Node.Node('root')
 
@@ -42,25 +42,25 @@ def readRowsLineByLine(csvFile, classIndex):
             Node.visitTree(root, dictionary, minDepth=3, pushExamplesToLeaf=False, isAdaptive=False)
 
         else:
-            print(f'finished building the tree with {streamIndex} exaples')
+            print(f'finished building the tree with {streamIndex} examples')
             break
 
         streamIndex = streamIndex + 1
 
-        if streamIndex%10000 is 0:
-            pass
+        if streamIndex%1000 is 0:
             print(f'{streamIndex} examples processed so far...')
-            # Node.preOrder(root)
-            # print(f'#############################\n')
 
     return list, chunks, root
 
-result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
+start = timeit.default_timer()
+
+# result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
 # result = readRowsLineByLine("iris.csv", classIndex=4)
 # result = readRowsLineByLine("weatherLong.csv", classIndex=4)
 # result = readRowsLineByLine("d.csv", classIndex=0)
 # result = readRowsLineByLine("data.csv", classIndex=0)
-
+result = readRowsLineByLine("bugs.csv", classIndex=0)
+# result = readRowsLineByLine("forest.csv", classIndex=0)
 
 # x = Node.preOrder(root)
 
@@ -75,6 +75,7 @@ def readRowsForTest(csvFile, classIndex):
     streamIndex = 0
     hits = []
     miss = []
+    predictionMatrix = []
     for row in Utils.csvRowsGenerator(csvFile):
         attributeIndex = 0
         dictionary = {}
@@ -105,8 +106,7 @@ def readRowsForTest(csvFile, classIndex):
         root.numeric = numeric
         root.categorical = categorical
 
-
-        Node.visiTreeForTest(root, dictionary, hits, miss)
+        Node.visiTreeForTest(root, dictionary, hits, miss, predictionMatrix)
 
         streamIndex = streamIndex + 1
 
@@ -117,7 +117,15 @@ def readRowsForTest(csvFile, classIndex):
     print(f'finished building the tree with {streamIndex} examples')
     print(f'{len(hits)} # {len(miss)}')
 
+    Utils.calCulateFMeasure(predictionMatrix)
+
     return
 
 root.deadEnd = False
-readRowsForTest('test.csv', 0)
+# readRowsForTest('test.csv', 0)
+readRowsForTest('test4.csv', 0)
+# readRowsForTest('test5.csv', 0)
+
+stop = timeit.default_timer()
+
+print(f'execution time: {stop - start}')
