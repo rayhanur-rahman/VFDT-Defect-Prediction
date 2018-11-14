@@ -182,6 +182,7 @@ def visitTree(node, example, minDepth, pushExamplesToLeaf, isAdaptive):
         criticalPoint = result[1]
         splits = result[2]
         if len(numberOfClasses) > 1:
+            # if epsilon - criticalPoint < 0:
             if epsilon - criticalPoint < 0 or node.exampleCount > result[4]:
                 bestAttribute = splits[0]
                 node.attribute['name'] = bestAttribute['attribute']

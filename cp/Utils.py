@@ -357,7 +357,19 @@ def calCulateFMeasure(predictioMatrix):
                     and outcome[index] == False:
                 FN[uniqueClassIndex] += 1
 
-    print(f'{ TP[0] / (TP[0] + FP[0] + .001) }')
-    print(f'{ TP[0] / (TP[0] + FN[0] + .001) }')
-    print(f'{ TP[1] / (TP[1] + FP[1] + .001) }')
-    print(f'{ TP[1] / (TP[1] + FN[1] + .001) }')
+    # print(f'{uniqueClasses}')
+    # print(f'{ TP[0] / (TP[0] + FP[0] + .001) }')
+    # print(f'{ TP[0] / (TP[0] + FN[0] + .001) }')
+    # print(f'{ TP[1] / (TP[1] + FP[1] + .001) }')
+    # print(f'{ TP[1] / (TP[1] + FN[1] + .001) }')
+
+    accuracy = (TP[1] + FN[1])/(TP[1] + FP[1] + TN[1] + FN[1])
+
+    precision = TP[1] / (TP[1] + FP[1] + .001)
+    recall = TP[1] / (TP[1] + FN[1] + .001)
+    falseAlarm = FP[1]/(FP[1]+FN[1] + .001)
+    d2h = math.sqrt( (1-recall)*(1-recall) + falseAlarm*falseAlarm )
+    f1score = (2*precision*recall)/(precision+recall+.001)
+    # print(f'accuracy \t precison \t recall \t false alarm \t d2h \t f1 score')
+    print(f'{accuracy:.2f} {precision:.2f} {recall:.2f} {falseAlarm:.2f} {d2h:.2f} {f1score:.2f}')
+    print(f'{TP[1]} {TN[1]} {FP[1]} {FN[1]}')

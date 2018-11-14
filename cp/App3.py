@@ -1,8 +1,7 @@
 import csv, re, Utils, math, sys, Node, timeit
 
-root = Node.Node('root')
 
-def readRowsLineByLine(csvFile, classIndex):
+def readRowsLineByLine(csvFile, classIndex, split, root):
     list = []
     numeric = []
     categorical = []
@@ -42,32 +41,25 @@ def readRowsLineByLine(csvFile, classIndex):
             Node.visitTree(root, dictionary, minDepth=3, pushExamplesToLeaf=False, isAdaptive=False)
 
         else:
-            print(f'finished building the tree with {streamIndex} examples')
+            # print(f'finished building the tree with {streamIndex} examples')
             break
 
         streamIndex = streamIndex + 1
 
+
+
+
         if streamIndex%1000 is 0:
-            print(f'{streamIndex} examples processed so far...')
+            pass
+            # print(f'{streamIndex} examples processed so far...')
+
+        if streamIndex >= split :
+            # print('fuck')
+            break
 
     return list, chunks, root
 
-start = timeit.default_timer()
-
-# result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
-# result = readRowsLineByLine("iris.csv", classIndex=4)
-# result = readRowsLineByLine("weatherLong.csv", classIndex=4)
-# result = readRowsLineByLine("d.csv", classIndex=0)
-# result = readRowsLineByLine("data.csv", classIndex=0)
-result = readRowsLineByLine("bugs.csv", classIndex=0)
-# result = readRowsLineByLine("forest.csv", classIndex=0)
-
-# x = Node.preOrder(root)
-
-
-
-
-def readRowsForTest(csvFile, classIndex):
+def readRowsForTest(csvFile, classIndex, split, root):
     list = []
     numeric = []
     categorical = []
@@ -77,55 +69,68 @@ def readRowsForTest(csvFile, classIndex):
     miss = []
     predictionMatrix = []
     for row in Utils.csvRowsGenerator(csvFile):
-        attributeIndex = 0
-        dictionary = {}
-        for item in row:
-            isNumeric = None
-            if Utils.getType(item.strip()) is "num":
-                item = float(item.strip())
-                isNumeric = True
-            elif Utils.getType(item.strip()) is "str":
-                item = str(item.strip())
-                isNumeric = False
-            else:
-                return
-            if attributeIndex == classIndex:
-                dictionary['class'] = item
-            else:
-                key = 'a' + str(attributeIndex)
-                dictionary[key] = item
-                if streamIndex is 0:
-                    if isNumeric:
-                        numeric.append(key)
-                    else:
-                      categorical.append(key)
+        if streamIndex > split:
+            attributeIndex = 0
+            dictionary = {}
+            for item in row:
+                isNumeric = None
+                if Utils.getType(item.strip()) is "num":
+                    item = float(item.strip())
+                    isNumeric = True
+                elif Utils.getType(item.strip()) is "str":
+                    item = str(item.strip())
+                    isNumeric = False
+                else:
+                    return
+                if attributeIndex == classIndex:
+                    dictionary['class'] = item
+                else:
+                    key = 'a' + str(attributeIndex)
+                    dictionary[key] = item
+                    if streamIndex is 0:
+                        if isNumeric:
+                            numeric.append(key)
+                        else:
+                          categorical.append(key)
 
-            attributeIndex = attributeIndex + 1
-        list.append(dictionary)
+                attributeIndex = attributeIndex + 1
+            list.append(dictionary)
 
-        root.numeric = numeric
-        root.categorical = categorical
+            root.numeric = numeric
+            root.categorical = categorical
 
-        Node.visiTreeForTest(root, dictionary, hits, miss, predictionMatrix)
+            Node.visiTreeForTest(root, dictionary, hits, miss, predictionMatrix)
 
         streamIndex = streamIndex + 1
 
-        if streamIndex%10000 is 0:
+        if streamIndex%100000 is 0:
             pass
-            print(f'{streamIndex} examples processed so far...')
+            # print(f'{streamIndex} examples processed so far...')
 
-    print(f'finished building the tree with {streamIndex} examples')
-    print(f'{len(hits)} # {len(miss)}')
+    # print(f'finished building the tree with {len(hits)+len(miss)} examples')
+    # print(f'{len(hits)} # {len(miss)}')
 
     Utils.calCulateFMeasure(predictionMatrix)
 
     return
 
-root.deadEnd = False
-# readRowsForTest('test.csv', 0)
-readRowsForTest('test4.csv', 0)
-# readRowsForTest('test5.csv', 0)
 
-stop = timeit.default_timer()
+root = None
+start = None
+stop = None
 
-print(f'execution time: {stop - start}')
+for i in range(9991, 10000, 1):
+    print(f'{i/100}%:')
+    root = Node.Node('root')
+    start = timeit.default_timer()
+    split = 89303*((100-(i/100))/100)
+    result = readRowsLineByLine("bugs-test.csv", 0, split, root)
+    stop = timeit.default_timer()
+    root.deadEnd = False
+    print(f'training time: {stop - start}')
+    start = timeit.default_timer()
+    readRowsForTest('bugs-test.csv', 0, split, root)
+    stop = timeit.default_timer()
+    print(f'testing time: {stop - start}')
+    root = None
+
