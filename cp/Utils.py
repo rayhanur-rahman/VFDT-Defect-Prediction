@@ -338,12 +338,17 @@ def calCulateFMeasure(predictioMatrix):
     FN = [0] * len(uniqueClasses)
 
     # for 1
+    ifa = 0
+    ifaScoreCounted = False
     for uniqueClassIndex in range(0, len(uniqueClasses)):
         for index in range(0, len(predictedClasses)):
             if classes[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) and \
                     predictedClasses[index] == getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
                     and outcome[index] == True:
                 TP[uniqueClassIndex] += 1
+                if TP[uniqueClassIndex] == 1 and ifaScoreCounted == False:
+                    ifa = FP[uniqueClassIndex]
+                    ifaScoreCounted = True
             if classes[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) and \
                     predictedClasses[index] != getFromSetByIndex(uniqueClasses, uniqueClassIndex) \
                     and outcome[index] == True:
@@ -371,5 +376,5 @@ def calCulateFMeasure(predictioMatrix):
     d2h = math.sqrt( (1-recall)*(1-recall) + falseAlarm*falseAlarm )
     f1score = (2*precision*recall)/(precision+recall+.001)
     # print(f'accuracy \t precison \t recall \t false alarm \t d2h \t f1 score')
-    print(f'{accuracy:.2f} {precision:.2f} {recall:.2f} {falseAlarm:.2f} {d2h:.2f} {f1score:.2f}')
-    print(f'{TP[1]} {TN[1]} {FP[1]} {FN[1]}')
+    # print(f'{accuracy*100:.2f} {precision*100:.2f} {recall*100:.2f} {falseAlarm*100:.2f} {d2h*100:.2f} {f1score*100:.2f} {ifa}')
+    return [accuracy, precision, recall, falseAlarm, d2h, f1score, ifa]
