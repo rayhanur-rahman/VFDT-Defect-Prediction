@@ -22,6 +22,33 @@ def csvRowsGenerator(csvfile):
         for row in csv_reader:
             yield row
 
+def getDiscretizedRangeByMedian(data, attribute):
+    length = len(data)
+    if length == 0: return None, None, None
+    list = []
+    for item in data:
+        list.append(item[attribute])
+    cuts = []
+    list.sort()
+    cuts.sort()
+    minRange = []
+    maxRange = []
+
+    midPoint = math.floor(length/2)
+    if midPoint == 0 or (midPoint == 1 and length == 2):
+        cuts.append(midPoint)
+        minRange.append(list[0])
+        maxRange.append(list[-1])
+    else:
+        cuts.append(midPoint)
+        minRange.append(list[0])
+        minRange.append(list[midPoint+1])
+        maxRange.append(list[midPoint])
+        maxRange.append(list[-1])
+
+    return minRange, maxRange, cuts
+
+
 def getDiscretizedRange(data, attribute):
     length = len(data)
     if length == 0: return None, None, None
@@ -103,7 +130,7 @@ def getDiscretizedRangeNumPy(data, attribute):
         list.append(item[attribute])
     enough = math.pow(len(list), 0.5)
     # hist, bin_edges = numpy.histogram(list, bins=int( math.floor(enough) ))
-    hist, bin_edges = numpy.histogram(list, bins=int( 3 ))
+    hist, bin_edges = numpy.histogram(list, bins=int( 20 ))
 
 
     minRange = []
@@ -131,7 +158,6 @@ def getBestSplitNumeric(list, attributeName):
     list.sort(key=lambda k: k[attributeName])
     unique = Utils.retrieveSet(list, 'class')
     ranges = Utils.getDiscretizedRange(list, attributeName)
-
     rangeDictionary = {
         'min': ranges[0],
         'max': ranges[1]
@@ -191,6 +217,73 @@ def getBestSplitNumeric(list, attributeName):
     bestSplit['averageEntropy'] = averageEntropy
     # print(f'{bestSplit}')
     return bestSplit, chunks, rangeDictionary
+
+
+def getBestSplitNumericMedian(list, attributeName):
+    list.sort(key=lambda k: k[attributeName])
+    unique = Utils.retrieveSet(list, 'class')
+    ranges = Utils.getDiscretizedRangeByMedian(list, attributeName)
+    rangeDictionary = {
+        'min': ranges[0],
+        'max': ranges[1]
+    }
+
+    totalMatrix = [0] * len(unique)
+    for itemIndex in list:
+        for index in range(0, len(unique)):
+            if itemIndex['class'] == Utils.getFromSetByIndex(unique, index):
+                totalMatrix[index] = totalMatrix[index] + 1
+
+    bestSplit = {
+        'attribute': attributeName,
+        'type' : 'numeric',
+        'min' : None,
+        'max': None,
+        'entropy': sys.maxsize,
+        'averageEntropy': None
+    }
+
+    chunks = []
+
+    averageEntropy = 0
+
+    for itemIndex in range(0, len(ranges[0])):
+        countMatrix = [0] * len(unique)
+        for element in list:
+            if ranges[0][itemIndex] <= element[attributeName] <= ranges[1][itemIndex]:
+                for index in range(0, len(unique)):
+                    if element['class'] == Utils.getFromSetByIndex(unique, index):
+                        countMatrix[index] = countMatrix[index] + 1
+
+        entropy = 0
+        total = sum(countMatrix)
+        for index in range(0, len(unique)):
+            p = (countMatrix[index] + .001) / (total + .001)
+            if p == 1 and len(unique) == 1: entropy = entropy - 0
+            else: entropy = entropy - p * math.log(p, len(unique))
+
+        if entropy < bestSplit['entropy']:
+            bestSplit['min'] = ranges[0][itemIndex]
+            bestSplit['max'] = ranges[1][itemIndex]
+            bestSplit['entropy'] = entropy
+
+        chunk = {
+            'attribute': attributeName,
+            'type': 'numeric',
+            'min': ranges[0][itemIndex],
+            'max': ranges[1][itemIndex],
+            'entropy': entropy
+        }
+
+        averageEntropy = averageEntropy + entropy*(total/len(list))
+
+        chunks.append(chunk)
+
+    bestSplit['averageEntropy'] = averageEntropy
+    # print(f'{bestSplit}')
+    return bestSplit, chunks, rangeDictionary
+
+
 
 def getBestSplitCategorical(list, attributeName):
     list.sort(key=lambda k: k[attributeName])
@@ -367,6 +460,8 @@ def calCulateFMeasure(predictioMatrix):
     # print(f'{ TP[0] / (TP[0] + FN[0] + .001) }')
     # print(f'{ TP[1] / (TP[1] + FP[1] + .001) }')
     # print(f'{ TP[1] / (TP[1] + FN[1] + .001) }')
+
+    # print(f'{TP[1]} {FP[1]} {TN[1]} {FN[1]}')
 
     accuracy = (TP[1] + FN[1])/(TP[1] + FP[1] + TN[1] + FN[1])
 

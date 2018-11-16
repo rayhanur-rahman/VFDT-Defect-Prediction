@@ -1,6 +1,6 @@
-import csv, re, Utils, math, sys
+import csv, re, Utils, math, sys, timeit
 
-def readRowsLineByLine(csvFile, classIndex):
+def readRowsLineByLine(csvFile, split, classIndex):
     list = []
     numeric = []
     categorical = []
@@ -31,94 +31,100 @@ def readRowsLineByLine(csvFile, classIndex):
                       categorical.append(key)
 
             attributeIndex = attributeIndex + 1
+
         list.append(dictionary)
         streamIndex = streamIndex + 1
 
-        if streamIndex%120 is 0:
-            pass
+        if streamIndex >= split :
+            break
 
-            splits = []
-            chunks = []
-
-
-            for item in numeric:
-                out = Utils.getBestSplitNumeric(list, item)
-                splits.append(out[0])
-                for item in out[1]:
-                    chunks.append(item)
+    splits = []
+    chunks = []
 
 
-            for item in categorical:
-                out = Utils.getBestSplitCategorical(list, item)
-                splits.append(out[0])
-                for item in out[1]:
-                    chunks.append(item)
+    for item in numeric:
+        out = Utils.getBestSplitNumericMedian(list, item)
+        splits.append(out[0])
+        for item in out[1]:
+            chunks.append(item)
 
-            numOfAttributes = len(row) - 1
-            splits.sort(key=lambda k: k['averageEntropy'])
-            min = splits[0]['averageEntropy']
-            # max = splits[-1]['averageEntropy']
-            max = splits[ math.floor( math.sqrt(numOfAttributes) ) ]['averageEntropy']
-            criticalPoint = (max - min) / math.sqrt(numOfAttributes)
-            # criticalPoint = (max - min) / numOfAttributes
 
-            delta = .05
-            unique = Utils.retrieveSet(list, 'class')
-            epsilon = math.log(len(unique), math.e) * math.sqrt(( math.log(1/delta, math.e) ) / streamIndex)
-            print(f'distance: {epsilon - criticalPoint}, total inputs: {streamIndex}')
+    for item in categorical:
+        out = Utils.getBestSplitCategorical(list, item)
+        splits.append(out[0])
+        for item in out[1]:
+            chunks.append(item)
 
-            if epsilon - criticalPoint < 0:
-                print("success")
-                return list, chunks
 
     return list, chunks
 
 
+# result = readRowsLineByLine("/home/rr/Workspace/NCSUFSS18/cp/lammps-train.csv", 2500, classIndex=0)
 
+def formFFT(result):
+    list = result[0]
+    chunks = result[1]
 
+    tree = []
 
-# result = readRowsLineByLine("/media/rr/8E30E13030E12047/bigdata/higgs.csv", classIndex=0)
-result = readRowsLineByLine("iris.csv", classIndex=4)
-# result = readRowsLineByLine("weatherLong.csv", classIndex=4)
-# result = readRowsLineByLine("d.csv", classIndex=0)
-# result = readRowsLineByLine("data.csv", classIndex=0)
+    while True:
+        out = Utils.FFT(list, chunks)
+        if len(chunks) == 0 or len(out[0]) == len(list):
+            unique = Utils.retrieveSet(list, 'class')
+            totalMatrix = [0] * len(unique)
+            classMatrix = [''] * len(unique)
 
-list = result[0]
-chunks = result[1]
-tree = []
+            classMatrixIndex = 0
+            for item in unique:
+                classMatrix[classMatrixIndex] = item
+                classMatrixIndex = classMatrixIndex + 1
 
-while True:
-    out = Utils.FFT(list, chunks)
-    if len(chunks) == 0 or len(out[0]) == len(list):
-        unique = Utils.retrieveSet(list, 'class')
-        totalMatrix = [0] * len(unique)
-        classMatrix = [''] * len(unique)
+            for item in list:
+                for index in range(0, len(unique)):
+                    if item['class'] == Utils.getFromSetByIndex(unique, index):
+                        totalMatrix[index] = totalMatrix[index] + 1
 
-        classMatrixIndex = 0
-        for item in unique:
-            classMatrix[classMatrixIndex] = item
-            classMatrixIndex = classMatrixIndex + 1
+            total = sum(totalMatrix)
+            probabilityIndex = [0] * len(unique)
+            for index in range(0, len(probabilityIndex)):
+                probabilityIndex[index] = (totalMatrix[index] + .001) / (total + .001)
 
-        for item in list:
-            for index in range(0, len(unique)):
-                if item['class'] == Utils.getFromSetByIndex(unique, index):
-                    totalMatrix[index] = totalMatrix[index] + 1
+            tree.append({
+                'type': 'leaf',
+                'class': classMatrix,
+                'probability': probabilityIndex
+            })
+            break
+        list = out[0]
+        chunks = out[1]
+        tree.append(out[2])
+        if len(tree) > 3:
+            unique = Utils.retrieveSet(list, 'class')
+            totalMatrix = [0] * len(unique)
+            classMatrix = [''] * len(unique)
 
-        total = sum(totalMatrix)
-        probabilityIndex = [0] * len(unique)
-        for index in range(0, len(probabilityIndex)):
-            probabilityIndex[index] = (totalMatrix[index] + .001) / (total + .001)
+            classMatrixIndex = 0
+            for item in unique:
+                classMatrix[classMatrixIndex] = item
+                classMatrixIndex = classMatrixIndex + 1
 
-        tree.append({
-            'type': 'leaf',
-            'class': classMatrix,
-            'probability': probabilityIndex
-        })
-        break
-    list = out[0]
-    chunks = out[1]
-    tree.append(out[2])
+            for item in list:
+                for index in range(0, len(unique)):
+                    if item['class'] == Utils.getFromSetByIndex(unique, index):
+                        totalMatrix[index] = totalMatrix[index] + 1
 
+            total = sum(totalMatrix)
+            probabilityIndex = [0] * len(unique)
+            for index in range(0, len(probabilityIndex)):
+                probabilityIndex[index] = (totalMatrix[index] + .001) / (total + .001)
+
+            tree.append({
+                'type': 'leaf',
+                'class': classMatrix,
+                'probability': probabilityIndex
+            })
+            break
+    return tree
 
 def readTestData(csvFile, classIndex):
     list = []
@@ -155,78 +161,117 @@ def readTestData(csvFile, classIndex):
         streamIndex = streamIndex + 1
     return list
 
+# tree = formFFT(result)
 
-# testList = readTestData('test.csv', 0)
-# testList = readTestData('test2.csv', 0)
-testList = readTestData('test3.csv', 4)
+# testList = readTestData('/home/rr/Workspace/NCSUFSS18/cp/lammps-test.csv', 0)
+
+def predict(testData, tree):
+    hits = 0
+    miss = 0
+    unpredicted = 0
+    total = 0
+    predictionMatrix = []
+    for element in testData:
+        predictedClass = None
+        for item in tree:
+            if item['type'] == 'numeric':
+                x = element[item['attribute']]
+                if item['min'] <= element[item['attribute']] <= item['max']:
+                    maxProbability = -1
+                    maxProbabilityIndex = 0
+                    for p in item['probability']:
+                        if p > maxProbability:
+                            maxProbability = p
+                            predictedClass = item['class'][maxProbabilityIndex]
+                        maxProbabilityIndex = maxProbabilityIndex + 1
+
+            if item['type'] == 'categorical':
+                x = element[item['attribute']]
+                if item['value'] == element[item['attribute']]:
+                    maxProbability = -1
+                    maxProbabilityIndex = 0
+                    for p in item['probability']:
+                        if p > maxProbability:
+                            maxProbability = p
+                            predictedClass = item['class'][maxProbabilityIndex]
+                        maxProbabilityIndex = maxProbabilityIndex + 1
+
+            if predictedClass != None and predictedClass == element['class']:
+                # print(f'{predictedClass} {element["class"]} hit')
+                hits = hits + 1
+                predictionMatrix.append((element['class'], predictedClass, True))
+                break
+
+            if predictedClass != None and predictedClass != element['class']:
+                # print(f'{predictedClass} {element["class"]} miss')
+                miss = miss + 1
+                predictionMatrix.append((element['class'], predictedClass, False))
+                break
+
+        if predictedClass == None:
+            unpredicted = unpredicted + 1
+            maxProbability = -1
+            maxProbabilityIndex = 0
+            for p in tree[-1]['probability']:
+                if p > maxProbability:
+                    maxProbability = p
+                    predictedClass = tree[-1]['class'][maxProbabilityIndex]
+                maxProbabilityIndex = maxProbabilityIndex + 1
 
 
-testData = testList
+            if predictedClass != None and predictedClass == element['class']:
+                # print(f'{predictedClass} {element["class"]} hit')
+                hits = hits + 1
+                predictionMatrix.append((element['class'], predictedClass, True))
+                continue
 
 
-hits = 0
-miss = 0
-unpredicted = 0
-total = 0
-for element in testData:
-    predictedClass = None
-    for item in tree:
-        if item['type'] == 'numeric':
-            x = element[item['attribute']]
-            if item['min'] <= element[item['attribute']] <= item['max']:
-                maxProbability = -1
-                maxProbabilityIndex = 0
-                for p in item['probability']:
-                    if p > maxProbability:
-                        maxProbability = p
-                        predictedClass = item['class'][maxProbabilityIndex]
-                    maxProbabilityIndex = maxProbabilityIndex + 1
+            if predictedClass != None and predictedClass != element['class']:
+                # print(f'{predictedClass} {element["class"]} miss')
+                miss = miss + 1
+                predictionMatrix.append((element['class'], predictedClass, False))
+                continue
 
-        if item['type'] == 'categorical':
-            x = element[item['attribute']]
-            if item['value'] == element[item['attribute']]:
-                maxProbability = -1
-                maxProbabilityIndex = 0
-                for p in item['probability']:
-                    if p > maxProbability:
-                        maxProbability = p
-                        predictedClass = item['class'][maxProbabilityIndex]
-                    maxProbabilityIndex = maxProbabilityIndex + 1
-
-        if predictedClass != None and predictedClass == element['class']:
-            # print(f'{predictedClass} {element["class"]} hit')
-            hits = hits + 1
-            break
-
-        if predictedClass != None and predictedClass != element['class']:
-            # print(f'{predictedClass} {element["class"]} miss')
-            miss = miss + 1
-            break
-
-    if predictedClass == None:
-        unpredicted = unpredicted + 1
-        maxProbability = -1
-        maxProbabilityIndex = 0
-        for p in tree[-1]['probability']:
-            if p > maxProbability:
-                maxProbability = p
-                predictedClass = tree[-1]['class'][maxProbabilityIndex]
-            maxProbabilityIndex = maxProbabilityIndex + 1
-
-
-        if predictedClass != None and predictedClass == element['class']:
-            # print(f'{predictedClass} {element["class"]} hit')
-            hits = hits + 1
-            break
-
-        if predictedClass != None and predictedClass != element['class']:
-            # print(f'{predictedClass} {element["class"]} miss')
-            miss = miss + 1
-            break
         # pass
 
 
-    total = total + 1
+        total = total + 1
+
+    return Utils.calCulateFMeasure(predictionMatrix)
+
+# predict(testList, tree)
 
 
-print(f'{100*(hits/total)}')
+def dump(trainFile, testFile, output, maxSize):
+    print(trainFile)
+    start = None
+    stop = None
+
+    list = [.01, .02, .03, .04, .05, .06,
+            .07, .08, .09, .1, .2, .3,
+            .4, .5, .6, .7, .8, .9,
+            1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
+            80, 85, 90, 95, 100]
+    # list = [.01]
+
+    file = open(output, 'w')
+    file.write('data-size, accuracy, precision, recall, false-alarm, d2h, f1-score, ifa, training-time\n')
+
+    for item in list:
+        print(item)
+        start = timeit.default_timer()
+        split = (maxSize*item)/100
+        result = readRowsLineByLine(trainFile, split, 0)
+        tree = formFFT(result)
+        stop = timeit.default_timer()
+        trainTime = stop - start
+        result = readTestData(testFile, 0)
+        result = predict(result, tree)
+        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {2000*trainTime/split:.2f}\n')
+    file.close()
+    return
+
+# dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-fft.csv', 80789)
+# dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-fft.csv', 37218)
+# dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-fft.csv', 22302)
+# dump('mda-train.csv', 'mda-test.csv', 'mda-dump-fft.csv', 10588)
