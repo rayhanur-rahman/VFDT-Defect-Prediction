@@ -267,11 +267,11 @@ def dump(trainFile, testFile, output, maxSize):
         trainTime = stop - start
         result = readTestData(testFile, 0)
         result = predict(result, tree)
-        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {2000*trainTime/split:.2f}\n')
+        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {1000*trainTime:.2f}\n')
     file.close()
     return
 
-# dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-fft.csv', 80789)
-# dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-fft.csv', 37218)
-# dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-fft.csv', 22302)
-# dump('mda-train.csv', 'mda-test.csv', 'mda-dump-fft.csv', 10588)
+dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-fft.csv', 80789)
+dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-fft.csv', 37218)
+dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-fft.csv', 22302)
+dump('mda-train.csv', 'mda-test.csv', 'mda-dump-fft.csv', 10588)

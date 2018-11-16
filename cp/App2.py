@@ -6,6 +6,8 @@ from sklearn.metrics import accuracy_score
 from sklearn import tree
 from sklearn.metrics import classification_report, confusion_matrix
 import timeit, math, psutil, os
+from sklearn.ensemble import RandomForestClassifier
+
 
 def learn(trainFile, testFile, training_size):
     balance_data = pd.read_csv(trainFile,sep= ',', header=None)
@@ -32,6 +34,7 @@ def learn(trainFile, testFile, training_size):
                                      min_samples_leaf=5,
                                      min_samples_split=10)
 
+    clf_entropy = RandomForestClassifier(n_estimators=100, criterion='entropy')
     clf_entropy.fit(X_train, y_train)
     end = timeit.default_timer()
     y_pred_en = clf_entropy.predict(X_test)
@@ -76,10 +79,10 @@ def dump(train, test, output):
     file.close()
     return
 
-dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-cart.csv')
-dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-cart.csv')
-dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-cart.csv')
-dump('mda-train.csv', 'mda-test.csv', 'mda-dump-cart.csv')
+dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-rf.csv')
+dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-rf.csv')
+dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-rf.csv')
+dump('mda-train.csv', 'mda-test.csv', 'mda-dump-rf.csv')
 
 
 
