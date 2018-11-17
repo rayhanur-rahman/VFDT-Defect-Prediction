@@ -1,21 +1,35 @@
 import csv, re, Utils, math, sys, Node, timeit, random
 
-# abinit: 7421221 19
-# lammps: 16755210 19
-# libmesh: 7301355 19
-# mda: 2011819 14
+# abinit: 6728971 19
+# lammps: 15173205 19
+# libmesh: 6565557 19
+# mda: 1808907 14
 
 
 def dump(csvFile):
-    streamIndex = 0
-    attributeIndex = 0
-    loc = 0
-    file = open('dump.csv', 'w')
-    for row in Utils.csvRowsGenerator(csvFile):
-        print(row)
+    list = [.01, .02, .03, .04, .05, .06,
+            .07, .08, .09, .1, .2, .3,
+            .4, .5, .6, .7, .8, .9,
+            1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
+            80, 85, 90, 95, 100]
+    file = open('temp.csv', 'w')
+    file.write('loc\n')
+
+    for item in list:
+        streamIndex = 0
+        loc = 0
+        for row in Utils.csvRowsGenerator(csvFile):
+            for index in range(0, len(row)):
+                if index == 14:
+                    loc = loc + float(row[index])
+            streamIndex += 1
+            if streamIndex >= item*10588*.01:
+                file.write(f'{100*loc/1808907:.2f}\n')
+                break
+    file.close()
     return
 
-# dump('/home/rr/Workspace/NCSUFSS18/cp/mda.csv')
+dump('/home/rr/Workspace/NCSUFSS18/cp/mda-train.csv')
 
 def trainTestSplit(csv, traindata, testdata):
     streamIndex = 0
@@ -39,4 +53,4 @@ def trainTestSplit(csv, traindata, testdata):
     file2.close()
     return
 
-trainTestSplit('/home/rr/Workspace/NCSUFSS18/cp/mda.csv', 'mda-train.csv', 'mda-test.csv')
+# trainTestSplit('/home/rr/Workspace/NCSUFSS18/cp/mda.csv', 'mda-train.csv', 'mda-test.csv')

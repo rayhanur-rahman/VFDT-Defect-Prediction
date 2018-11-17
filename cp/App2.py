@@ -27,14 +27,21 @@ def learn(trainFile, testFile, training_size):
     y_test = Y2
 
     start = timeit.default_timer()
-    clf_entropy = DecisionTreeClassifier(criterion = "entropy",
-                                     random_state = 100,
-                                     max_depth=3,
-                                     max_leaf_nodes=20,
-                                     min_samples_leaf=5,
-                                     min_samples_split=10)
+    # clf_entropy = DecisionTreeClassifier(criterion = "entropy",
+    #                                  random_state = 100,
+    #                                  max_depth=6,
+    #                                  min_samples_leaf=50,
+    #                                  min_samples_split=50)
 
-    clf_entropy = RandomForestClassifier(n_estimators=100, criterion='entropy')
+    clf_entropy = RandomForestClassifier(n_estimators=100,
+                                         random_state=100,
+                                         criterion='entropy',
+                                         max_depth=6,
+                                         min_samples_leaf=50,
+                                         min_samples_split=50)
+
+
+
     clf_entropy.fit(X_train, y_train)
     end = timeit.default_timer()
     y_pred_en = clf_entropy.predict(X_test)

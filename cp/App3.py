@@ -150,7 +150,7 @@ def dump(trainFile, testFile, output, maxloc, maxSize, locIndex):
     file.close()
     return
 
-dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-vfdt.csv', 7421221, 80789, 19)
-dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-vfdt.csv', 16755210, 37218, 19)
-dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-vfdt.csv', 7301355, 22302, 19)
-dump('mda-train.csv', 'mda-test.csv', 'mda-dump-vfdt.csv', 2011819, 10588, 14)
+dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-vfdt.csv', 6728971, 80789, 19)
+dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-vfdt.csv', 15173205, 37218, 19)
+dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-vfdt.csv', 6565557, 22302, 19)
+dump('mda-train.csv', 'mda-test.csv', 'mda-dump-vfdt.csv', 1808907, 10588, 14)
