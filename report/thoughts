@@ -1,0 +1,12 @@
+variance
+tuning stability
+cvfdt
+distribution change
+cross valiadation
+optimized code of vfdt
+for all test, do with proper mutation
+evolution algorithm parameters
+how much imporvement is possible over normal run and mutated run
+mean and sd of recall
+reaching hoefding bound
+best mutated solution should be done in sets but we hv got points
