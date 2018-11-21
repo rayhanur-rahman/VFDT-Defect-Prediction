@@ -255,7 +255,7 @@ def dump(trainFile, testFile, output, maxSize):
     # list = [.01]
 
     file = open(output, 'w')
-    file.write('data-size, accuracy, precision, recall, false-alarm, d2h, f1-score, ifa, training-time\n')
+    file.write('size, accuracy, precision, recall, fa, d2h, f1, time\n')
 
     for item in list:
         print(item)
@@ -267,11 +267,40 @@ def dump(trainFile, testFile, output, maxSize):
         trainTime = stop - start
         result = readTestData(testFile, 0)
         result = predict(result, tree)
-        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {1000*trainTime:.2f}\n')
+        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {1000*trainTime:.2f}\n')
     file.close()
     return
 
-dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-fft.csv', 80789)
-dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-fft.csv', 37218)
-dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-fft.csv', 22302)
-dump('mda-train.csv', 'mda-test.csv', 'mda-dump-fft.csv', 10588)
+
+for x in range(1,11):
+    datasets = ['abinit', 'lammps', 'libmesh', 'mda']
+    size = [73096, 33677, 20185, 9607]
+    path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
+    i = 0
+    for set in datasets:
+        dump(f'{path}{set}-train-{x}.csv', f'{path}{set}-test-{x}.csv', f'{set}-dump-fft-{x}.csv',size[i])
+        i += 1
+
+
+# dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-fft.csv', 80789)
+# dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-fft.csv', 37218)
+# dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-fft.csv', 22302)
+# dump('mda-train.csv', 'mda-test.csv', 'mda-dump-fft.csv', 10588)
+
+
+# i=0
+# for x in range(1,101):
+#     print(x)
+#     datasets = ['abinit']
+#     path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
+#     trainFile = path+'abinit-train-1.csv'
+#     maxSize = 73096
+#     start = timeit.default_timer()
+#     split = (maxSize * x) / 100
+#     result = readRowsLineByLine(trainFile, split, 0)
+#     tree = formFFT(result)
+#     stop = timeit.default_timer()
+#     trainTime = stop - start
+#
+#     i = i + (stop-start)
+# print(i)

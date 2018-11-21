@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def learn(trainFile, testFile, training_size):
+    start = timeit.default_timer()
     balance_data = pd.read_csv(trainFile,sep= ',', header=None)
     balance_data_test = pd.read_csv(testFile,sep= ',', header=None)
 
@@ -26,19 +27,18 @@ def learn(trainFile, testFile, training_size):
     y_train = Y
     y_test = Y2
 
-    start = timeit.default_timer()
     # clf_entropy = DecisionTreeClassifier(criterion = "entropy",
     #                                  random_state = 100,
     #                                  max_depth=6,
-    #                                  min_samples_leaf=50,
-    #                                  min_samples_split=50)
+    #                                  min_samples_leaf=.12,
+    #                                  min_samples_split=.435)
 
-    clf_entropy = RandomForestClassifier(n_estimators=100,
+    clf_entropy = RandomForestClassifier(n_estimators=10,
                                          random_state=100,
                                          criterion='entropy',
-                                         max_depth=6,
-                                         min_samples_leaf=50,
-                                         min_samples_split=50)
+                                         max_depth=10,
+                                         min_samples_leaf=.005,
+                                         min_samples_split=.01)
 
 
 
@@ -74,27 +74,48 @@ def dump(train, test, output):
             .4, .5, .6, .7, .8, .9,
             1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
             80, 85, 90, 95, 100]
-    # list = [.01]
+    # list = [100]
 
     file = open(output, 'w')
-    file.write(f'data-size, accuracy, precision, recall, false-alarm, d2h, f1-score, ifa, training-time\n')
+    file.write(f'size, accuracy, precision, recall, fa, d2h, f1, time\n')
 
     for item in list:
+        start = timeit.default_timer()
         result = learn(train, test, item)
-        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {100*result[7]:.2f}\n')
+        end = timeit.default_timer()
+        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[7]:.2f}\n')
 
     file.close()
     return
 
-dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-rf.csv')
-dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-rf.csv')
-dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-rf.csv')
-dump('mda-train.csv', 'mda-test.csv', 'mda-dump-rf.csv')
+
+for x in range(1,11):
+    datasets = ['abinit', 'lammps', 'libmesh', 'mda']
+    datasets = ['abinit']
+    path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
+    i = 0
+    for set in datasets:
+        dump(f'{path}{set}-train-{x}.csv', f'{path}{set}-test-{x}.csv', f'{set}-dump-rf-{x}.csv')
+        i += 1
+
+# dump('/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-train-1.csv', '/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-test-1.csv', 'abinit-dump-rf-exp.csv')
+# dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-rf.csv')
+# dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-rf.csv')
+# dump('mda-train.csv', 'mda-test.csv', 'mda-dump-rf.csv')
 
 
 
-
-
+# i=0
+# for x in range(1,101):
+#     print(x)
+#     datasets = ['abinit']
+#     path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
+#     start = timeit.default_timer()
+#     for set in datasets:
+#         result = learn(f'{path}{set}-train-1.csv', f'{path}{set}-test-1.csv', x)
+#     end = timeit.default_timer()
+#     i = i + (end-start)
+# print(i)
 
 
 

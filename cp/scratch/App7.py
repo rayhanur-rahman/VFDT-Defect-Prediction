@@ -29,15 +29,15 @@ def dump(csvFile):
     file.close()
     return
 
-dump('/home/rr/Workspace/NCSUFSS18/cp/mda-train.csv')
+# dump('/home/rr/Workspace/NCSUFSS18/cp/mda-train.csv')
 
-def trainTestSplit(csv, traindata, testdata):
+def trainTestSplit(csv, traindata, testdata, seed):
     streamIndex = 0
     file = open(testdata, 'w')
     file2 = open(traindata, 'w')
-
+    random.seed(seed)
     list = []
-    for x in range(0, math.ceil(11705*.1), 1):
+    for x in range(0, math.ceil(11705*.2), 1):
         list.append(random.randint(0, 11705))
 
     for row in Utils.csvRowsGenerator(csv):
@@ -53,4 +53,42 @@ def trainTestSplit(csv, traindata, testdata):
     file2.close()
     return
 
-# trainTestSplit('/home/rr/Workspace/NCSUFSS18/cp/mda.csv', 'mda-train.csv', 'mda-test.csv')
+# for x in range(1, 11):
+#     trainTestSplit('/home/rr/Workspace/NCSUFSS18/cp/mda.csv', f'mda-train-{x}.csv', f'mda-test-{x}.csv', x*100)
+
+
+def average(dataset, learner):
+    path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/reports/'
+    list = []
+    for x in range(1,11):
+        streamIndex = 0
+        ls = []
+        for row in Utils.csvRowsGenerator(f'{path}{dataset}-dump-{learner}-{x}.csv'):
+            if streamIndex > 0:
+                ls.append(row)
+            streamIndex += 1
+        list.append(ls)
+
+    # list row col
+    file = open(f'{dataset}-dump-{learner}.csv', 'w')
+    file.write('size, accuracy, precision, recall, fa, d2h, f1, time\n')
+    sum = 0
+    string = ''
+    for row in range(0, 39):
+        for col in range(0,8):
+            for x in range(0,10):
+                value = float(str(list[x][row][col]).strip())
+                sum = sum + value
+            sum = sum/10
+            if string != '': string = string + ', ' + f'{sum:.2f}'
+            else: string = f'{sum:.2f}'
+            sum=0
+        file.write(f'{string}'+'\n')
+        string=''
+    file.close()
+    return
+
+average('abinit', 'rf')
+average('lammps', 'rf')
+average('libmesh', 'rf')
+average('mda', 'rf')

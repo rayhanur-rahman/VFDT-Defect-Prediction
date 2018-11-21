@@ -1,24 +1,5 @@
 import sklearn.metrics as sk, math, sys, matplotlib.pyplot as plot, numpy as np, Utils
 
-def example():
-    x = [1, 2, 3, 10, 50, 100]
-    y = [50, 90, 80, 10, 0, 50]
-
-    print(sk.auc(x, y))
-
-    year = [1960, 1970, 1980, 1990, 2000, 2010]
-    pop_pakistan = [44.91, 58.09, 78.07, 107.7, 138.5, 170.6]
-    pop_india = [449.48, 553.57, 696.783, 870.133, 1000.4, 1309.1]
-    plot.plot(year, pop_pakistan, color='green', label='pak', marker='x')
-    plot.plot(year, pop_india, color='orange', label='ind', marker='o')
-    plot.xlabel('Countries')
-    plot.ylabel('Population in million')
-    plot.title('Pakistan India Population till 2010')
-    plot.legend()
-    # plot.show()
-    plot.savefig('xx.png')
-    return
-
 def getAUC(csvFile, xName, yName):
     line = 0
     xIndex = 0
@@ -40,11 +21,35 @@ def getAUC(csvFile, xName, yName):
     return sk.auc(X, Y)
 
 
+def getAUCLoc(csvFile, xName, yName, percent):
+    line = 0
+    xIndex = 0
+    yIndex = 0
+    X = []
+    Y = []
+    for row in Utils.csvRowsGenerator(csvFile):
+        for index in range(0, len(row), 1):
+            if line == 0:
+                if str(row[index]).strip() == xName:
+                    xIndex = index
+                if str(row[index]).strip() == yName:
+                    yIndex = index
+            else:
+                if float(str(row[xIndex]).strip()) < percent:
+                    if index == xIndex: X.append(float(str(row[index]).strip()))
+                    if index == yIndex: Y.append(float(str(row[index]).strip()))
+        line += 1
+    # print(X)
+    # print(Y)
+    return sk.auc(X, Y)
+
+
+
 def getAUCOfAll():
     dataset_list = ['abinit', 'lammps', 'libmesh', 'mda']
     learner_list = ['cart', 'fft', 'rf', 'vfdt']
-    x_list = ['data-size', 'loc']
-    y_list = ['accuracy', 'precision', 'recall', 'f1-score', 'd2h', 'training-time']
+    x_list = ['size', 'loc']
+    y_list = ['precision', 'recall', 'time']
 
     file = open('auc-report.csv', 'w')
     file.write('dataset, learner, x-axis, y-axis, auc-score\n')
@@ -95,7 +100,7 @@ def getPlot(learners, dataset, xName, yName):
     plot.plot(X[3], Y[3], color='black', label='VFDT', marker='s')
     plot.xlabel(f'{xName}')
     plot.ylabel(f'{yName}')
-    plot.title(f'{xName} vs {yName}')
+    plot.title(f'{dataset}: {xName} vs {yName}')
     plot.legend()
     # plot.show()
     plot.savefig(f'{dataset}-{xName}-{yName}.svg')
@@ -106,11 +111,22 @@ def getPlot(learners, dataset, xName, yName):
 
 def getAllPlot():
     dataset_list = ['abinit', 'lammps', 'libmesh', 'mda']
-    x_list = ['data-size', 'loc']
-    y_list = ['accuracy', 'precision', 'recall', 'f1-score', 'd2h']
+    x_list = ['size']
+    y_list = [ 'precision', 'recall', 'f1', 'time']
 
     for d in dataset_list:
         for x in x_list:
             for y in y_list:
                 getPlot(['cart', 'fft', 'rf', 'vfdt'], d, x, y)
 
+data = ['abinit', 'lammps', 'libmesh', 'mda']
+learner = ['vfdt', 'cart', 'fft', 'rf']
+for d in data:
+    for l in learner:
+        file = open(f'loc-auc-{d}-{l}.csv', 'w')
+        file.write('loc, auc\n')
+        for i in range(1, 11):
+            x = getAUCLoc(f'/home/rr/Workspace/NCSUFSS18/cp/report/{d}-dump-{l}.csv', 'loc', 'recall', i*10)
+            file.write(f'{i*10}, {x:.2f}\n')
+
+        file.close()

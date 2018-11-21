@@ -39,7 +39,13 @@ def readRowsLineByLine(csvFile, classIndex, split, root, locIndex):
         root.categorical = categorical
 
         if root.deadEnd == False:
-            Node.visitTree(root, dictionary, minDepth=3, pushExamplesToLeaf=False, isAdaptive=False)
+            Node.visitTree(root, dictionary,
+                           minDepth=2,
+                           pushExamplesToLeaf=False,
+                           isAdaptive=False,
+                           nmin=5,
+                           tie=.5,
+                           split=19)
 
         else:
             # print(f'finished building the tree with {streamIndex} examples')
@@ -117,7 +123,6 @@ def readRowsForTest(csvFile, classIndex, split, root):
 
     return Utils.calCulateFMeasure(predictionMatrix)
 
-
 def dump(trainFile, testFile, output, maxloc, maxSize, locIndex):
     print(trainFile)
     root = None
@@ -129,10 +134,10 @@ def dump(trainFile, testFile, output, maxloc, maxSize, locIndex):
             .4, .5, .6, .7, .8, .9,
             1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
             80, 85, 90, 95, 100]
-    # list = [.01]
+    # list = [100]
 
     file = open(output, 'w')
-    file.write('data-size, loc, accuracy, precision, recall, false-alarm, d2h, f1-score, ifa, training-time\n')
+    file.write('size, accuracy, precision, recall, fa, d2h, f1, time\n')
 
     for item in list:
         print(item)
@@ -145,12 +150,24 @@ def dump(trainFile, testFile, output, maxloc, maxSize, locIndex):
         root.deadEnd = False
         trainTime = stop - start
         result = readRowsForTest(testFile, 0, split, root)
-        file.write(f'{item}, {100*loc/maxloc:.2f}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {result[6]}, {2000*trainTime/split:.2f}\n')
+        file.write(f'{item}, {100*result[0]:.2f}, {100*result[1]:.2f}, {100*result[2]:.2f}, {100*result[3]:.2f}, {100*result[4]:.2f}, {100*result[5]:.2f}, {1000*trainTime:.2f}\n')
         root = None
     file.close()
     return
 
-dump('abinit-train.csv', 'abinit-test.csv', 'abinit-dump-vfdt.csv', 6728971, 80789, 19)
-dump('lammps-train.csv', 'lammps-test.csv', 'lammps-dump-vfdt.csv', 15173205, 37218, 19)
-dump('libmesh-train.csv', 'libmesh-test.csv','libmesh-dump-vfdt.csv', 6565557, 22302, 19)
-dump('mda-train.csv', 'mda-test.csv', 'mda-dump-vfdt.csv', 1808907, 10588, 14)
+for x in range(1,11):
+    datasets = ['abinit', 'lammps', 'libmesh', 'mda']
+    size = [73096, 33677, 20185, 9607]
+    datasets = ['libmesh']
+    size = [20185]
+    path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
+    i = 0
+    for set in datasets:
+        print(f'{set} {x}')
+        dump(f'{path}{set}-train-{x}.csv', f'{path}{set}-test-{x}.csv', f'{set}-dump-vfdt-{x}.csv', 100, size[i], 14)
+        i += 1
+
+    # dump(f'/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-train.csv', f'abinit-test.csv', f'abinit-dump-vfdt.csv', 6728971, 73096, 19)
+    # dump(f'lammps-train.csv', f'lammps-test.csv', f'lammps-dump-vfdt.csv', 15173205, 33677, 19)
+    # dump(f'libmesh-train.csv', f'libmesh-test.csv',f'libmesh-dump-vfdt.csv', 6565557, 20185, 19)
+    # dump(f'mda-train.csv', f'mda-test.csv', f'mda-dump-vfdt.csv', 1808907, 9607, 14)
