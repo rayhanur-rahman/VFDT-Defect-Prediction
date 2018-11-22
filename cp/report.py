@@ -103,7 +103,7 @@ def getPlot(learners, dataset, xName, yName):
     plot.title(f'{dataset}: {xName} vs {yName}')
     plot.legend()
     # plot.show()
-    plot.savefig(f'{dataset}-{xName}-{yName}.svg')
+    plot.savefig(f'{dataset}-{xName}-{yName}.png')
     plot.clf()
     return
 
@@ -119,14 +119,17 @@ def getAllPlot():
             for y in y_list:
                 getPlot(['cart', 'fft', 'rf', 'vfdt'], d, x, y)
 
-data = ['abinit', 'lammps', 'libmesh', 'mda']
-learner = ['vfdt', 'cart', 'fft', 'rf']
-for d in data:
-    for l in learner:
-        file = open(f'loc-auc-{d}-{l}.csv', 'w')
-        file.write('loc, auc\n')
-        for i in range(1, 11):
-            x = getAUCLoc(f'/home/rr/Workspace/NCSUFSS18/cp/report/{d}-dump-{l}.csv', 'loc', 'recall', i*10)
-            file.write(f'{i*10}, {x:.2f}\n')
+# data = ['abinit', 'lammps', 'libmesh', 'mda']
+# learner = ['vfdt', 'cart', 'fft', 'rf']
+# for d in data:
+#     for l in learner:
+#         file = open(f'loc-auc-{d}-{l}.csv', 'w')
+#         file.write('loc, auc\n')
+#         for i in range(1, 11):
+#             x = getAUCLoc(f'/home/rr/Workspace/NCSUFSS18/cp/report/{d}-dump-{l}.csv', 'loc', 'recall', i*10)
+#             file.write(f'{i*10}, {x:.2f}\n')
+#
+#         file.close()
 
-        file.close()
+getAllPlot()
+
