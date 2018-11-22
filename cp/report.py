@@ -100,7 +100,7 @@ def getPlot(learners, dataset, xName, yName):
     plot.plot(X[3], Y[3], color='black', label='VFDT', marker='s')
     plot.xlabel(f'{xName}')
     plot.ylabel(f'{yName}')
-    plot.title(f'{dataset}: {xName} vs {yName}')
+    plot.title(f'{dataset}: {xName} vs false alarm')
     plot.legend()
     # plot.show()
     plot.savefig(f'{dataset}-{xName}-{yName}.png')
@@ -112,7 +112,7 @@ def getPlot(learners, dataset, xName, yName):
 def getAllPlot():
     dataset_list = ['abinit', 'lammps', 'libmesh', 'mda']
     x_list = ['size']
-    y_list = [ 'precision', 'recall', 'f1', 'time']
+    y_list = [ 'fa']
 
     for d in dataset_list:
         for x in x_list:
