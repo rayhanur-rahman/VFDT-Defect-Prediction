@@ -166,6 +166,10 @@ The Hoeffding bound has the very attractive property that it is independent of t
 
 A key property of the Hoeffding tree algorithm is that it is possible to guarantee under realistic assumptions that the trees it produces are asymptotically arbitrarily close to the ones produced by a batch learner (i.e., a learner that uses all the examples to choose a test at each node). In other words, the incremental nature of the Hoeffding tree algorithm does not significantly affect the quality of the trees it produces. In this work, we have implemented vfdt by python completely from the scratch. 
 
+\subsection{Tuning Method}
+As CART, Random Forest and VFDT have several parameters that can pose impact in the classification performance, parameter tuning is necessary before deploying the learners for classifications tasks. We have used differential evolution method for finding the sub-optimal parameters for the classifiers. It finds the optimal solution for a problem by iteratively searching the canditate solution on the basis of a given fitness function. First it generates an initial population of candidate solutions and then generate subsequent set of candidate solutions by applying mutation and crossover methods. After that, all the possible solutions will be tested against a fitness function and best set of solutions will be kept. This process is done iteratively for several pass and final set of best solution will be considered. However, it must be kept in mind that this process does not guarantee that the theoretical optimal solution has been found. In this work, we have implemented this process from the scratch. 
+
+
 \section{Experiemnt Design}
 In this work, we will apply four data miners named CART, FFT, RF and VFDT on four software defect prediction datasets. These datasets will be fed to the miners incrementally. We would observe the performance of all four miners based on these datasets. The experiment setup is described below:
 
@@ -224,14 +228,65 @@ As CART, Random Forest and VFDT have several parameters that can pose impact in 
 
 \begin{enumerate}
 	\item \textbf{Number of estimators: } This parameter is only applicable to random forest classifier. This is the number of trees that will be used for classification task in the random forest. 
-	\item \textbf{Tree depth: } 
-	\item \textbf{Minimum sample leaves: }
-	\item \textbf{Minimum number of examples to split: }
-	\item \textbf{Ties: }
-	\item \textbf{Frequency of Computation of $G$: }
+	\item \textbf{Tree depth: } This parameter denotes the maximal depth of the decision tree.
+	\item \textbf{Minimum sample leaves: } This denotes the minimum number of samples required to split an internal node.
+	\item \textbf{Minimum number of examples to split: } This denotes the minimum number of samples required to be at a leaf node. A split point at any depth will only be considered if it leaves at least of this value in each of the left and right branches.
+	\item \textbf{Ties: } When two or more attributes have very similar $G$s, potentially many examples will be required to decide between them with high confidence. This is presumably wasteful, because in this case it makes little difference which attribute is chosen. Thus VFDT can optionally decide that there is effectively a tie and split on the current best attribute if $\delta G < \epsilon < \tau$, where $\tau$ is a user-specified threshold.
+	\item \textbf{Frequency of Computation of $G$: } The most significant part of the time cost per example is recomputing $G$. It is inefficient to recompute G for every new example, because it is unlikely that the decision to split will be made at that specific point. Thus VFDT allows the user to specify a minimum number of new examples nmin that must be accumulated at a leaf before $G$ is recomputed. This effectively reduces the global time spent on $G$ computations by a factor of $n_min$, and can make learning with VFDT nearly as fast as simply classifying the training examples. Notice, however, that it will have the effect of implementing a smaller $\delta$ than the one specified by the user, because examples will be accumulated beyond the strict minimum required to choose the correct attribute with confidence $1 - \delta$. (This increases the time required to build a node, but our experiments show that the net effect is still a large speedup.) Because $\delta$ shrinks exponentially fast with the number of examples, the difference could be large, and the $\delta$ input to VFDT should be correspondingly larger than the target.
 \end{enumerate}
 
+\begin{center}
+	\begin{table}[h]
+		\begin{tabular}{|c|c|c|}
+			\hline 
+			\textbf{Parameter} & \textbf{Range} & \textbf{Applicable Classifiers} \\ 
+			\hline 
+			Estimator & $(10,100)$ & RF \\ 
+			\hline 
+			Depth & $(2,10)$ & CART, RF, VFDT \\ 
+			\hline 
+			Splits & $(0,1)$, $(5,500)$ & CART, RF, VFDT \\ 
+			\hline 
+			Leaves & $(0,1)$ & CART, RF \\ 
+			\hline 
+			$\tau$ & $(.001,.99)$ & VFDT \\ 
+			\hline 
+			$n_min$& $(5,500)$ & VFDT \\ 
+			\hline 
+		\end{tabular} 
+	\end{table}
+\end{center}
+
 \subsection{Evaluation Criteria}
+The evaluation criteria are discussed below:
+\begin{enumerate}
+	\item \textbf{Memory: } It denotes the maximum amount of primary memory used by the python program containing classifiers. In this work, it will be measured in Megabytes.
+	\item \textbf{Time: } It denotes tha amount of time taken by the program to train from the dataset and construct the decision model. In this work, it will be measured in milliseconds.
+	\item \textbf{Precision: } This is the ratio of all detected bugs that are true positives and detected bugs that are true and false positives.
+	\begin{equation}
+	precision = \frac{true \ positive}{true\ positive + false \ positive}
+	\end{equation}
+	\item \textbf{Recall: } This is the ratio of all detected bugs that are true positives and detected bugs that are false negatives and true positives. Recall score is very critical in the scope of this work because if recall score is low, that will mean that the classifiers would provide many false positive bugs.
+	\begin{equation}
+	recall = \frac{true \ positive}{true \ positive + false \ negative}
+	\end{equation}
+	\item \textbf{False Alarm: } This is the ratio of all detected bugs that are false positives and detected bugs that are false negatives and false positives. 
+	\begin{equation}
+	false \ alarm = \frac{false \ positive}{false \ positive + false \ negative}
+	\end{equation}
+	\item \textbf{F-Measure: } This is the harmonic mean of precision and recall. It signifies the overall prediction quality of the classifier.
+	\begin{equation}
+	f \ measure = \frac{2*precision*recall}{precision+recall}
+	\end{equation}
+\end{enumerate}
+
+It is noteworthy that we are not considering $accuracy$ as it does not provide a good view of the prediction quality. In case of imbalanced data, it also outputs misleading information.
+
+\section{Result Analysis}
+.............
+\section{Threats to Validity}
+
+\section{Future Work Direction and Conclusion}
 
 %% Bibliography
 \bibliography{bibfile}
