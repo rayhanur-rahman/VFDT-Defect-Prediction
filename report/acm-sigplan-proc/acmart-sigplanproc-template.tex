@@ -57,7 +57,7 @@ Finding and fixing software defects was a manual task decades ago. But these day
 
 ...Despite the fact that, there have been numerous advanced miners deployed in defect prediction; classification techniques to build defect prediction models have focused on the performance. However, as the volume of software source codes increases in daily basis, so does the size of defect prediction examples from which the classifiers will predict the defects. Hence, in case of traditional learners, memory and sample size will be a dominant obstacle if those are fed with incrementally large amount of data from time to time. Being trained with small number of data also suffers from overfitting. Meanwhile, currently there are many online data-miners are available which are sample size agnostic. Thus exploring the comparison of traditional learners and online data miners have become a priority.  
 
-In this paper, we have put three offline classifier named C4.5 decision tree based classifier, Fast Frugal Tree (FFT), Random forest against online classifier named VFDT. We will look into three research questions in particular:
+In this paper, we have put three offline classifiers named CART decision tree based classifier, Fast Frugal Tree (FFT), Random forest against online classifier named VFDT. We will look into three research questions in particular:
 \begin{itemize}
 	\item \textbf{RQ1: } How these four classifiers performs in large defect prediction datasets that will increment over time
 	\item \textbf{RQ2: } How hyper-parameters changes as the data size changes
@@ -73,8 +73,7 @@ bla bla bla
 
 \section{Background and Motivation}
 ...
-\subsection{Baseline Criteria for Data Miners}
-Baseline criteria refers to the important factors, majority of which should be achieved by a learner. It provides key insight to us regarding how effective and efficient the data miners would perform in the real world. Here follows some of the key baseline crietria along with their short description. 
+\subsection{Baseline Criteria for Data Miners} These days, numerous data miners are being deployed in SE domain. There are also a diversified variation in how those miners tweaked and tuned to fit a particular model. That leaves us with virtually unlimited choice to pick a certain data miner or optimizer to apply in a new problem. However, according to the no free lunch theory, these is no single miner which would suit best in every possible models. So, we need to apply commissioning to filter through the possible choices of data miners or optimizers. In that regard, baseline criteria is truly useful. Baseline criteria refers to the important factors, majority of which should be achieved by a learner. It provides key insight to us regarding how effective and efficient the data miners would perform in the real world. Here follows some of the key baseline crietria along with their short description. 
 \subsubsection{Simple and Reasonable}
 
 Learners should be simple in a sense that it is easily explicable to the end users. It should also be easy to understand the underlying models, how it works and how to work on to build on further. There are several learners that not very easy to describe such as Naive Bayes classifiers and neural networks. On the other hands, decision tree based models are simple enough to understand and explain to others. However, learners have to be reasonable as well. It should perform well in terms of accuracy and performance. Otherwise being a simple learning producing non-reasonable results does not help the case of data mining activities. 
@@ -110,10 +109,129 @@ In addition, there are several other baselines that deserves mention:
 \begin{itemize}
 	\item Be applicable to mixed qualitative and quantitative data
 	\item Have no parameters within the modelling process that require tuning.
-	\item Be publicly available via a reference implementation and associatedenvironment for execution
+	\item Be publicly available via a reference implementation and associated environment for execution
 	\item Be computationally cheap in a reasonable sense
 \end{itemize}
 
+\subsubsection{Criteria for this Work}
+All of the aforementioned criteria are more or less critical for any learner. However, set of baselines critical for a particular domain depends on many contexts as well. In some cases, computational performance might be the most critical. In other case, the accuracy might be the most critical one. In the context of this work, we will try to observe the performance of various tree based learners on incremental data. Hence, for our work, here are the list of critical baseline we will look more closely:
+\begin{enumerate}
+	\item \textbf{Usefulness: } The output of the miners should be at least better than some random guess. In this work, the miner would predict whether a given example contains bugs or not. The typical evaluation metrics such as precision and recall of the learners would be put into the focus. The examples will be fed into the miners in an incremental manner and we would observe how those evaluation measure changes over the new datasets that fed into the learners.
+	\item \textbf{Stable: } Stability is quite important in case of prediction. If the output of the learners produces varying degree of outputs, then the decision making process would be frustrating. In the context of this work, we would look into the stability of the prediction of the learners in terms of incrementally updated set of examples and observe how these learners perform.
+	\item \textbf{Cheap: } The computational resources being used by the learners is another important aspect. Learners might produce great results but if it comes using heavy computational resources such as cpu time and memory, then it might not become that useful in real world scenario. In this work, learners will learn from a range of small datasets to large one. So, we will try to gather information on how much cpu time and memory resources those learner will use to produce results.
+	\item \textbf{Robust: } In case of incremental datasets, the learners need to accommodate all the newer examples. However, this might also confuse learners with different examples or noisy examples. So it needs to be seen how robustly the learner can handle all the examples that will be added in the larger datasets.
+	\item \textbf{Streaming: } In case of very big datasets, the learners should be able to stream in the newer examples and fit those in the existing models. Otherwise, the learners need to completely relearn everything in case of the arrival of the newer data. In the context of this work, this is a very critical requirement.
+	\item \textbf{Tuning: } Tuning of the parameters of the learners is another important baseline. In our case, we would feed the learners with increasingly bigger amount of example set and observe how the initial tuning performs for the rest of the data. We would also like to observe how the optimal set of tuned parameters changes when newer examples comes into the context.
+\end{enumerate}
+
+\subsection{Motivation}
+These days, source codes are being committed to the source code repository periodically. The frequency of committing newer code base is ranged from hours and to days. In order to help developers with new potential defects while the new code base being committed, need to relearn the whole defect prediction model is necessary. As the new code is being pushed, software source code metrics which are being used be defect prediction models needs to be recomputed. Hence, the newer examples of software defects would come into play. So, assuming that newer version of source code being committed to the repository at least once in a day results into re-computation and relearning the whole things from the scratch. Traditional decision tree based learners such as Classification and Regression Tree, Random Forest, Fast frugal Trees all would need to relearn everything which is very cpu and memory extensive. If, high speed stream based learners would have been used in this scenario, then there would be no need to relearn everything from scratch as the streaming data miners automatically accommodates the newer examples with the existing models. That signifies the motivation of this work. We would like to observe how streaming learners perform against the offline learners in terms of feeding newer set of examples periodically. Hence, in this work, we would compare CART, RF and FFT against VFDT which is an online stream based decision tree learner and compare all these learners from the aspect of aforementioned baseline criteria.
+
+\subsection{Classifiers}
+In this work, we will observe the performance of four decision tree based classifiers. Here is a short description of each of these classifiers.
+
+\subsubsection{Decision Tree}
+Decision Tree learners uses decision tree based models as a predictive model to perform classification or regression over a set of examples. In our case, we will only use classification trees where the tree will be used to predict the class labels of a given set of examples. Each interior node refers to independent variables and edges refers to the value of that independent variable. Each leaf corresponds to the value of a target variable (or label or class) on the basis of all independent variables lying on the path from root to leaf. Each of these internal nodes are computed recursively from root. First, from the root, the best attribute is chosen on the basis of information gain from that attribute. After selecting the first best attribute, the root will have children based on the attribute value. Then in each of the child nodes, this process will go on recursively. The stopping criteria can be either a threshold of information gain or the depth of the tree. The leaves of the tree contains the probability of each labels associated with the choice of independent attributes from root to the leave. The advantage of decision tree is that it is simple, understandable and interpretable. It can handle both numerical and categorical data and it can be used to multiple classification and regression problem. However, decision trees would suffer from overfitting issue. Sometimes, the constructed decision model is very complicated as well. It also become unstable sometimes due to the variation in the training datasets. Moreover, finding the optimal decision tree for a particular model is not straightforward process. In the scope of this work, we will use the standard decision tree library from the python scikit-learn package. It uses an optimized version of CART (classification and regression Trees) which is a variant of C4.5 decision tree. 
+
+\subsubsection{Random Forest}
+Random Forest is an ensemble learning methods where multiple decision trees will be constructed from the training class and during testing, the class will be predicted that is the mode class predicted by all of the decision trees of that random forest. The intuition of random forest is to tackle the problem of overfitting suffered by the decision trees. In order to build the decision trees during the training time, example data of the training dataset will be randomly chosen along with replacement. During the computation of best splitting criteria, it would do that so from a randomly selected subset of the training example set. As a result, each tree tends to tackle the biasness and bagging along with random subset selection also ensures that individual trees have low correlation to each other leading to an ensemble that is both of low bias and low variance. In the scope of this work, we use the Random Forest library from scikit-learn package.
+
+\subsubsection{Fast and Frugal Tree}
+Fast and Frugal trees is a type of decision tree where a set of hierarchical rules is obtained from a training set. This tree has a depth of four usually and two branches in the each node. Each node represents a splitting attribute associated with a certain value or range. One of the branch denotes the subtree which will be used for further training if the condition is satisfied. The another branch is simply a leaf which denotes the cases if the condition is no satisfied. The leaf also contains the class information with associated probability. This type of tree is useful for quick interpretation of the decision models obtained from a training dataset. It is also useful for the dataset where number of key attributes is more or less, equal to the depth of the decision tree. In this work, we have implemented the Fast and Frugal tree from the scratch. We have used unsupervised discretization to select the best splitting attribute. 
+
+\subsubsection{VFDT - Very Fast Decision Tree}
+Classic decision tree learners like ID3, C4.5 and CART assume that all training examples can be stored simultaneously in main memory, and are thus
+severely limited in the number of examples they can learn from. Disk-based decision tree learners like SLIQ [10] and SPRINT [17] assume the examples are stored on disk, an 
+learn by repeatedly reading them in sequentially (effectively once per level in the tree). While this greatly increases the
+size of usable training sets, it can become prohibitively expensive when learning complex trees (i.e., trees with many levels), and fails when datasets are too large to fit in the
+available disk space
+
+Our goal is to design a decision tree learner for extremely large (potentially infinite) datasets. This learner should require each example to be read at most once, and only a small
+constant time to process it. This will make it possible to directly mine online data sources (i.e., without ever storing the examples), and to build potentially very complex trees with
+acceptable computational cost. We achieve this by noting with Catlett [2] and others that, in order to find the best attribute to test at a given node, it may be sufficient to consider only a small subset of the training examples that pass 
+through that node. Thus, given a stream of examples, the first ones will be used to choose the root test; once the root attribute is chosen, the succeeding examples will be passed
+down to the corresponding leaves and used to choose the appropriate attributes there, and so on recursively.1 We solve the difficult problem of deciding exactly how many examples are necessary at each node by using a statistical result known as the Hoeffding bound (or additive Chernoff bound). Consider a real-valued random variable $r$ whose range is $R$ (e.g., for a probability the range is one, and for an information gain the range is log $c$, where $c$ is the number of classes). Suppose we have made $n$ independent observations of this variable, and computed their mean $\bar{r}$. The Hoeffding bound states that, with probability $1-\delta$, the true mean of the variable is at least $\bar{r}-\epsilon$ , where 
+\begin{equation}
+	\epsilon = \sqrt{\frac{R^2\ln(1/\delta)}{2n}}
+\end{equation}
+
+\begin{figure}
+	\includegraphics[width=\linewidth]{figs/vfdt.PNG}
+	\caption{The VFDT Algorithm}
+	\label{fig:vfdt}
+\end{figure}
+
+The Hoeffding bound has the very attractive property that it is independent of the probability distribution generating the observations. The price of this generality is that the bound is more conservative than distribution-dependent ones (i.e., it will take more observations to reach the same $\delta$ and $\epsilon$). Let $G(X_i)$ be the heuristic measure used to choose test attributes (e.g., the measure could be information gain as in C4.5, or the Gini index as in CART). Our goal is to ensure that, with high probability, the attribute chosen using $n$ examples (where $n$ is as small as possible) is the same that would be chosen using infinite examples. Assume $G$ is to be maximized, and let $X_a$ be the attribute with highest observed $\bar{G}$ after seeing $n$ examples, and $X_b$ be the second-best attribute. Let $\Delta \bar{G} = \bar{G}(Xa) - \bar{G}(Xb) \ge 0$ be the difference between their observed heuristic values. Then, given a desired $\delta$, the Hoeffding bound guarantees that $X_a$ is the correct choice with probability $1 - \delta$ if $n$ examples have been seen at this node and $\Delta \bar{G} > \epsilon^2$ In other words, if the observed $\Delta \bar{G} > \epsilon$ then the Hoeffding bound guarantees that the true $\Delta G \ge \Delta \bar{G} - \epsilon > 0$ with probability $1 - \delta$, and therefore that $X_a$ is indeed the best attribute with probability $1 - \delta$. This is valid as long as the $G$ value for a node can be viewed as an average of $G$ values for the examples at that node, as is the case for the measures typically used. Thus a node needs to accumulate examples from the stream until $\epsilon$ becomes smaller than $\Delta \bar{G}$. (Notice that $\epsilon$ is a monotonically decreasing function of $n$.) At this point the node can be split using the current best attribute, and succeeding examples will be passed to the new leaves. This leads to the Hoeffding tree algorithm, shown in pseudo-code in \ref{fig:vfdt}.
+
+
+A key property of the Hoeffding tree algorithm is that it is possible to guarantee under realistic assumptions that the trees it produces are asymptotically arbitrarily close to the ones produced by a batch learner (i.e., a learner that uses all the examples to choose a test at each node). In other words, the incremental nature of the Hoeffding tree algorithm does not significantly affect the quality of the trees it produces. In this work, we have implemented vfdt by python completely from the scratch. 
+
+\section{Experiemnt Design}
+In this work, we will apply four data miners named CART, FFT, RF and VFDT on four software defect prediction datasets. These datasets will be fed to the miners incrementally. We would observe the performance of all four miners based on these datasets. The experiment setup is described below:
+
+\subsection{Dataset}
+Although, there are so many standard defect prediction datasets, we choose use datasets that came from different sequential committed version of the same source code. It will allow us to experiment with large set of examples and incremented examples over a period of time. Here is the descriptions of the datasets:
+
+\begin{center}
+	\begin{table}[h]
+			\begin{tabular}{|c|c|c|}
+			\hline 
+			\textbf{Name} & \textbf{Examples} & \textbf{Attributes} \\ 
+			\hline 
+			abinit & 89303 & 29 \\ 
+			\hline 
+			lammps & 41130 & 40 \\ 
+			\hline 
+			libmesh & 24673 & 40 \\ 
+			\hline 
+			mdanalysis & 11694 & 37 \\ 
+			\hline
+		\end{tabular}   
+	\caption{Dataset Description}
+	\label{tab:dataset}
+	\end{table}
+\end{center}
+
+After choosing the datasets, training and test example set needs to be generated. However, stratification and n-fold cross validation are not an option because those examples in the datasets are needed to be fed into the miners in incremental order (i.e. $5\%, 10\%, 15\%... $ of the data). This is why we randomly choose $80\%$ of the examples for each dataset and keep the rest of the data for testing set without breaking the sequence of the data. Thus, we have generated 10 different set of training and testing example pairs for each dataset. 
+
+\subsection{Testbed Setup}
+The work is performed in a traditional laptop PC. Here is the information of the execution environment.
+
+\begin{center}
+	\begin{table}[h]
+		\begin{tabular}{|c|c|}
+			\hline 
+			OS & Ubuntu 18.04 \\ 
+			\hline 
+			CPU & Intel Core i7 8550U \\ 
+			\hline 
+			Memory & 16GB \\ 
+			\hline 
+			Disk & SSD 240GB \\ 
+			\hline 
+			Language & Python 3.6 \\ 
+			\hline 
+			Data Miner Library & Scikit-Learn 0.20 \\ 
+			\hline  
+		\end{tabular} 
+	\caption{Testbed Information}
+	\label{tab:testbed}
+	\end{table}
+\end{center}
+
+\subsection{Parameter Tuning}
+As CART, Random Forest and VFDT have several parameters that can pose impact in the classification performance, parameter tuning is necessary before deploying the learners for classifications tasks. Here is the last of parameters that are needed to be tuned for the classifiers.
+
+\begin{enumerate}
+	\item \textbf{Number of estimators: } This parameter is only applicable to random forest classifier. This is the number of trees that will be used for classification task in the random forest. 
+	\item \textbf{Tree depth: } 
+	\item \textbf{Minimum sample leaves: }
+	\item \textbf{Minimum number of examples to split: }
+	\item \textbf{Ties: }
+	\item \textbf{Frequency of Computation of $G$: }
+\end{enumerate}
+
+\subsection{Evaluation Criteria}
 
 %% Bibliography
 \bibliography{bibfile}
