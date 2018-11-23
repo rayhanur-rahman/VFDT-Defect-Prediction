@@ -270,29 +270,146 @@ The evaluation criteria are discussed below:
 	\begin{equation}
 	recall = \frac{true \ positive}{true \ positive + false \ negative}
 	\end{equation}
-	\item \textbf{False Alarm: } This is the ratio of all detected bugs that are false positives and detected bugs that are false negatives and false positives. 
-	\begin{equation}
-	false \ alarm = \frac{false \ positive}{false \ positive + false \ negative}
-	\end{equation}
-	\item \textbf{F-Measure: } This is the harmonic mean of precision and recall. It signifies the overall prediction quality of the classifier.
-	\begin{equation}
-	f \ measure = \frac{2*precision*recall}{precision+recall}
-	\end{equation}
+%	\item \textbf{False Alarm: } This is the ratio of all detected bugs that are false positives and detected bugs that are false negatives and false positives. 
+%	\begin{equation}
+%	false \ alarm = \frac{false \ positive}{false \ positive + false \ negative}
+%	\end{equation}
+%	\item \textbf{F-Measure: } This is the harmonic mean of precision and recall. It signifies the overall prediction quality of the classifier.
+%	\begin{equation}
+%	f \ measure = \frac{2*precision*recall}{precision+recall}
+%	\end{equation}
 \end{enumerate}
 
 It is noteworthy that we are not considering $accuracy$ as it does not provide a good view of the prediction quality. In case of imbalanced data, it also outputs misleading information.
 
 \section{Result Analysis}
+In this section we will discuss the finidings in the light of research questions mentioned in section I.
 
-\begin{figure}
-	\includegraphics[width=\linewidth]{fig/abinit-size-precision.svg}
-	\caption{The VFDT Algorithm}
-	\label{fig:vfdt}
+\subsection{RQ1: How these four classifiers performs in large defect prediction datasets that will increment over time}
+We will try to observe how CART, RF, FFT and VFDT performs in terms of precision and recall. Before deploying the learners, we have performed parameter tuning and applied the parameters obtained at $25\%$ dataset size for the whole dataset.
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/abinit-size-precision.png}
+	\caption{Size vs Precision for abinit dataset}
+	\label{fig:ab-size-prec}
 \end{figure}
 
-\section{Threats to Validity}
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/abinit-size-recall.png}
+	\caption{Size vs Recall for abinit dataset}
+	\label{fig:ab-size-rec}
+\end{figure}
 
-\section{Future Work Direction and Conclusion}
+From the figure \ref{fig:ab-size-prec} and \ref{fig:ab-size-prec} we can see that, with increase of the examples in abinit dataset, precision score for VFDT does not fluctuate but for the other three learners, it fluctuates, mostly FFT. However, in case of recall score, VFDT performs far better and stable across all of the sizes for the dataset. For the other three learners, the score gets lower and lower when the size increases. 
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/lammps-size-precision.png}
+	\caption{Size vs Precision for lammps dataset}
+	\label{fig:lm-size-prec}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/lammps-size-recall.png}
+	\caption{Size vs Recall for lammps dataset}
+	\label{fig:lm-size-rec}
+\end{figure}
+
+From the figure \ref{fig:lm-size-prec} and \ref{fig:lm-size-prec} we can see that, with increase of the examples in lammps dataset, precision score for all the learners are similar and CART is performing slightly better than the others However, in case of recall score, VFDT slightly performs far better and stable across all of the sizes for the dataset. For the other three learners, the score fluctuates back and forth. However, CART performs the worst among the four learners. 
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/libmesh-size-precision.png}
+	\caption{Size vs Precision for libmesh dataset}
+	\label{fig:lb-size-prec}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/libmesh-size-recall.png}
+	\caption{Size vs Recall for libmesh dataset}
+	\label{fig:lb-size-rec}
+\end{figure}
+
+From the figure \ref{fig:lb-size-prec} and \ref{fig:lb-size-prec} we can see that, with increase of the examples in libmesh dataset, precision and recall score for all the learners are similar. However, it also shows us that with the increase of dataset size, the recall scores behaves very unstable, for all of the four learners. 
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/mda-size-precision.png}
+	\caption{Size vs Precision for mdanalysis dataset}
+	\label{fig:md-size-prec}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=6cm,height=4cm,keepaspectratio]{fig/mda-size-recall.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:md-size-rec}
+\end{figure}
+
+From the figure \ref{fig:md-size-prec} and \ref{fig:md-size-prec} we can see that, with increase of the examples in mdanalysis dataset, precision score for all the learners are similar and CART as well as FFT are performing slightly better than the others However, in case of recall score, VFDT performs far better and stable across all of the sizes for the dataset. For the other three learners, the score fluctuates back and forth a ittle bit. However, FFT performs the worst among the four learners. 
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{fig/auc-size.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:auc-size}
+\end{figure}
+
+..effort estimation
+
+In principle, the key observation from the analysis of four datasets are given below: 
+\begin{itemize}
+	\item VFDT performs better in recall score across all the dataset size. This can also be seen in the AUC score given in \ref{fig:auc-size}
+	\item VFDT achieves slightly a lower precision score than the other three learners. This can also be seen in the AUC score given in \ref{fig:auc-size}
+	\item Precision and recall scores of all the three learners except VFDT either goes up or down with the increase of data fed into them. For VFDT, it remains stable. As, VFDT reaches hoeffding bound and grows tree accordingly, with the increase of the data size, it's tree structure does not change. Hence, its precision and recall score also stay unchanged.
+	\item As we performed tuning of the learners with $25\%$ of the examples, it is obvious that optimal parameters for VFDT did not change while newer examples came. But with the arrival of newer examples, optimal set of parameters of CART and RF have changes. This is why their precision and recall score dropped.  
+	\item the precision score also tells us that all the learner performed marginally better than a random guess. 
+\end{itemize}
+
+\subsection{RQ2: How hyper-parameters changes as the data size changes}
+From the analysis in previous section, it is obvious that when the learner faces substantial amount of newer examples, their prediction performance goes down. Consequently, it remains to be seen whether further parameter tuning improves their performance or not. Keeping this in mind, we perform another three parameter tuning while the datasets finished processing $50\%$, $75\%$ and $100\%$ of the total examples. We observed that precision score does not vary significantly across the dataset size from all the learners, hence in our differential evolution method, we tried to optimize the parameters on the basis of recall score. Here is the summary of the findings:
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{fig/tune-ab.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:tune-ab}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{fig/tune-lm.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:tune-lm}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{fig/tune-lb.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:tune-lb}
+\end{figure}
+
+\begin{figure}[h]
+	\includegraphics[width=\linewidth]{fig/tune-md.png}
+	\caption{Size vs Recall for mdanalysis dataset}
+	\label{fig:tune-md}
+\end{figure}
+
+It is obvious from Figure \ref{fig:tune-ab}, \ref{fig:tune-lm}, \ref{fig:tune-lb}, \ref{fig:tune-md} that, for most of the cases recall score could have been improved if further tuning was deployed after seeing a substantial amount of newer examples. However, in case of learning for a large stream of data periodically, it is really inefficient to apply tuning each time the dataset learns. 
+
+\subsection{RQ3: How much computation resources would be used by these four learners}
+It is also important to observe the computational resources being used by the learners because, with the increase of data size, the need for the learners to become cheap in terms of time and memory is paramount. Here, the findings from our analysis is presented below.
+
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{\linewidth}
+		\includegraphics[width=.49\linewidth]{fig/abinit-size-time.png} \ 
+		\includegraphics[width=.49\linewidth]{fig/lammps-size-time.png}
+	\end{subfigure}
+	\begin{subfigure}[b]{\linewidth}
+		\includegraphics[width=.49\linewidth]{fig/libmesh-size-time.png} \ 
+		\includegraphics[width=.49\linewidth]{fig/mda-size-time.png}
+	\end{subfigure}
+	
+	\caption{Pictures of animals}\label{fig:animals}
+\end{figure}
+
+%\section{Threats to Validity}
+
+%\section{Future Work Direction and Conclusion}
 
 %% Bibliography
 \bibliography{bibfile}
