@@ -1,4 +1,5 @@
 import csv, re, Utils, math, sys, Node, timeit, os, psutil
+from pympler import asizeof
 
 def readRowsLineByLine(csvFile, classIndex, split, root, locIndex):
     list = []
@@ -58,11 +59,7 @@ def readRowsLineByLine(csvFile, classIndex, split, root, locIndex):
 
         if streamIndex%100 is 0:
             pass
-            # print(f'{streamIndex} examples processed so far...')
-            # process = psutil.Process(os.getpid())
-            # memory = process.memory_info()[0] / float(2 ** 20)
-            # print(memory)
-
+            print(asizeof.asizeof(root))
         if streamIndex >= split :
             # print(f'loc read: {loc}')
             break
@@ -155,11 +152,11 @@ def dump(trainFile, testFile, output, maxloc, maxSize, locIndex):
     file.close()
     return
 
-for x in range(1,11):
+for x in range(1,2):
     datasets = ['abinit', 'lammps', 'libmesh', 'mda']
     size = [73096, 33677, 20185, 9607]
-    datasets = ['libmesh']
-    size = [20185]
+    datasets = ['abinit']
+    size = [73096]
     path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
     i = 0
     for set in datasets:
@@ -171,3 +168,4 @@ for x in range(1,11):
     # dump(f'lammps-train.csv', f'lammps-test.csv', f'lammps-dump-vfdt.csv', 15173205, 33677, 19)
     # dump(f'libmesh-train.csv', f'libmesh-test.csv',f'libmesh-dump-vfdt.csv', 6565557, 20185, 19)
     # dump(f'mda-train.csv', f'mda-test.csv', f'mda-dump-vfdt.csv', 1808907, 9607, 14)
+

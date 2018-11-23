@@ -404,8 +404,30 @@ It is also important to observe the computational resources being used by the le
 		\includegraphics[width=.49\linewidth]{fig/mda-size-time.png}
 	\end{subfigure}
 	
-	\caption{Pictures of animals}\label{fig:animals}
+	\caption{Data Size vs Time}\label{fig:time}
 \end{figure}
+
+From the above fig \ref{fig:time}, we can see that FFT is very expensive in terms of computation time. Apart from libmesh dataset, it is also seen that CART, RF and VFDT all takes similar time to operate. However, such comparison between VFDT, CART and RF is not conclusive as the dataset is very small compared to the available primary memory in the testbed system. Hence, we needed to deploy the learner with a very big dataset that is similar to the size of primary memory of the computer. Unfortunately, such big dataset is not available for software defect prediction. Hence, we collected particle acceleration dataset from UCI Machine Learning dataset repository. The size of the dataset is around $8$Gb of size. It contains $110000000$ rows and $29$ columns. All the class labels are either boolean and attributes are continuous. From our run, here is the outcome. From the table \ref{higgs} above, it is obvious that VFDT scales in terms of both computation time and memory usage if the dataset size is substantially large.
+
+\begin{table}
+	\begin{tabular}{|c|c|c|}
+		\hline 
+		\textbf{Learner} & \textbf{Time} & Me\textbf{}mory \\ 
+		\hline 
+		CART & 654k & 14GB \\ 
+		\hline 
+		RF & 895k & 14Gb \\ 
+		\hline 
+		VFDT & 5.2k & 1.2GB \\ 
+		\hline 
+	\end{tabular}
+	\caption{Computation Resource Usage for Very Large Dataset} 
+	\label{higgs}
+\end{table}
+
+\section{Threats to Validity}
+
+
 
 %\section{Threats to Validity}
 

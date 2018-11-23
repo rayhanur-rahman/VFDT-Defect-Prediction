@@ -7,6 +7,7 @@ from sklearn import tree
 from sklearn.metrics import classification_report, confusion_matrix
 import timeit, math, psutil, os
 from sklearn.ensemble import RandomForestClassifier
+from pympler import asizeof
 
 
 def learn(trainFile, testFile, training_size):
@@ -27,22 +28,23 @@ def learn(trainFile, testFile, training_size):
     y_train = Y
     y_test = Y2
 
-    # clf_entropy = DecisionTreeClassifier(criterion = "entropy",
-    #                                  random_state = 100,
-    #                                  max_depth=6,
-    #                                  min_samples_leaf=.12,
-    #                                  min_samples_split=.435)
-
-    clf_entropy = RandomForestClassifier(n_estimators=10,
-                                         random_state=100,
-                                         criterion='entropy',
-                                         max_depth=10,
-                                         min_samples_leaf=.005,
-                                         min_samples_split=.01)
+    clf_entropy = DecisionTreeClassifier(criterion = "entropy",
+                                     random_state = 100,
+                                     max_depth=6,
+                                     min_samples_leaf=.12,
+                                     min_samples_split=.435)
+    #
+    # clf_entropy = RandomForestClassifier(n_estimators=10,
+    #                                      random_state=100,
+    #                                      criterion='entropy',
+    #                                      max_depth=10,
+    #                                      min_samples_leaf=.005,
+    #                                      min_samples_split=.01)
 
 
 
     clf_entropy.fit(X_train, y_train)
+    print(asizeof.asizeof(clf_entropy))
     end = timeit.default_timer()
     y_pred_en = clf_entropy.predict(X_test)
 
@@ -74,7 +76,7 @@ def dump(train, test, output):
             .4, .5, .6, .7, .8, .9,
             1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
             80, 85, 90, 95, 100]
-    # list = [100]
+    list = [100]
 
     file = open(output, 'w')
     file.write(f'size, accuracy, precision, recall, fa, d2h, f1, time\n')
@@ -89,7 +91,7 @@ def dump(train, test, output):
     return
 
 
-for x in range(1,11):
+for x in range(1,2):
     datasets = ['abinit', 'lammps', 'libmesh', 'mda']
     datasets = ['abinit']
     path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
