@@ -170,7 +170,7 @@ A key property of the Hoeffding tree algorithm is that it is possible to guarant
 As CART, Random Forest and VFDT have several parameters that can pose impact in the classification performance, parameter tuning is necessary before deploying the learners for classifications tasks. We have used differential evolution method for finding the sub-optimal parameters for the classifiers. It finds the optimal solution for a problem by iteratively searching the canditate solution on the basis of a given fitness function. First it generates an initial population of candidate solutions and then generate subsequent set of candidate solutions by applying mutation and crossover methods. After that, all the possible solutions will be tested against a fitness function and best set of solutions will be kept. This process is done iteratively for several pass and final set of best solution will be considered. However, it must be kept in mind that this process does not guarantee that the theoretical optimal solution has been found. In this work, we have implemented this process from the scratch. 
 
 
-\section{Experiemnt Design}
+\section{Experiment Design}
 In this work, we will apply four data miners named CART, FFT, RF and VFDT on four software defect prediction datasets. These datasets will be fed to the miners incrementally. We would observe the performance of all four miners based on these datasets. The experiment setup is described below:
 
 \subsection{Dataset}
@@ -225,6 +225,8 @@ The work is performed in a traditional laptop PC. Here is the information of the
 
 \subsection{Parameter Tuning}
 As CART, Random Forest and VFDT have several parameters that can pose impact in the classification performance, parameter tuning is necessary before deploying the learners for classifications tasks. Here is the last of parameters that are needed to be tuned for the classifiers.
+
+talk about de parameters.
 
 \begin{enumerate}
 	\item \textbf{Number of estimators: } This parameter is only applicable to random forest classifier. This is the number of trees that will be used for classification task in the random forest. 
