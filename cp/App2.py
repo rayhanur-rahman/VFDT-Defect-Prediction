@@ -44,7 +44,6 @@ def learn(trainFile, testFile, training_size):
 
 
     clf_entropy.fit(X_train, y_train)
-    print(asizeof.asizeof(clf_entropy))
     end = timeit.default_timer()
     y_pred_en = clf_entropy.predict(X_test)
 
@@ -56,7 +55,7 @@ def learn(trainFile, testFile, training_size):
 
     # print(f'accuracy: {accuracy_score(y_test, y_pred_en)}')
     cf = confusion_matrix(y_test, y_pred_en)
-    # print(cf)
+    print(cf)
     # print(classification_report(y_test, y_pred_en))
 
     accuracy = (cf[1][1]+cf[0][0])/(cf[0][0]+cf[1][1]+cf[0][1]+cf[1][0])
@@ -76,7 +75,7 @@ def dump(train, test, output):
             .4, .5, .6, .7, .8, .9,
             1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75,
             80, 85, 90, 95, 100]
-    list = [100]
+    # list = [100]
 
     file = open(output, 'w')
     file.write(f'size, accuracy, precision, recall, fa, d2h, f1, time\n')
@@ -97,7 +96,7 @@ for x in range(1,2):
     path = '/home/rr/Workspace/NCSUFSS18/cp/datasets/'
     i = 0
     for set in datasets:
-        dump(f'{path}{set}-train-{x}.csv', f'{path}{set}-test-{x}.csv', f'{set}-dump-rf-{x}.csv')
+        dump(f'{path}{set}-train-{x}.csv', f'{path}{set}-test-{x}.csv', f'{set}-dump-cart-{x}.csv')
         i += 1
 
 # dump('/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-train-1.csv', '/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-test-1.csv', 'abinit-dump-rf-exp.csv')

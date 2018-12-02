@@ -10,3 +10,41 @@ how much imporvement is possible over normal run and mutated run
 mean and sd of recall
 reaching hoefding bound
 best mutated solution should be done in sets but we hv got points
+imbalanced data
+show data on robustness
+does feature selection has any impact
+ratio of tp fp fn tn
+multi objective optimization
+show how much improvement has been done after applying DE
+look for threats to validity section in 
+    bellweather
+    better data vs better data miner
+de random seed bias + iteration count
+
+
+    TN FP
+    FN TP
+
+
+cart 6g 332
+rf 6g 425
+vfdt 271 34
+
+
+
+md
+0.50 0.44
+0.49 0.61
+0.52 0.18
+0.50 0.58
+lb
+0.85 0.04
+0.51 1.00
+0.51 1.00
+0.85 0.04
+lm
+0.60 0.01
+0.00 0.00
+0.00 0.00
+0.00 0.00
+

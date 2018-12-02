@@ -49,27 +49,27 @@ In various research fields, data miners are being applied in an intense manner s
 \maketitle
 
 \section{Introduction}
-These days, software automation has engulfed all the spheres of our life. Millions of software companies automates new business logics along with replacing legacy systems with its modern descendant. Consequently, software development is an ongoing process that never stops and hence, there will be always defects in the software sources that needs to be fixed in constant manner. Fixing these defects is one of the key concern in software quality assurance activities and dedicated human resources spend a significant time in resolving these issues - if unfixed, culminates in loss of money, time, consumer satisfaction and in mission critical cases, casualties.  
+These days, software automation has engulfed all the spheres of our life. Millions of software companies automates new business logics along with replacing legacy systems with its modern descendant. Consequently, software development is an ongoing process that never stops and hence, there will be always defects in the software sources that needs to be fixed in constant manner. Fixing these defects is one of the key concern in software quality assurance activities and dedicated human resources spend a significant time in resolving these issues - if unfixed, culminates in loss of money, time, consumer satisfaction and in mission critical cases, casualties \cite{erlikh2000leveraging}.  
 
 Finding and fixing software defects was a manual task decades ago. But these days, data miners are there to help the developers find these defects. These data miners work on the defect prediction models that mainly contains software code quality metrics such as line of code, cyclometric complexity etc. Based on these data, those data miners predicts whether a particular software module would contain defects or not.  
 
-...To perform defect prediction studies, researchers have explored the use of various classification techniques to train defect prediction models. For example, in early studies, researchers used simple techniques like logistic regression and linear regression to train defect prediction models. In more recent work, researchers have used more advanced techniques like adaptive regressions, ensemble learning etc. Several context sensitive analysis based defect predictors are explored as well.  
+...To perform defect prediction studies \cite{hall2012systematic, shihab2012exploration}, researchers have explored the use of various classification techniques to train defect prediction models. For example, in early studies, researchers used simple techniques like logistic regression and linear regression to train defect prediction models \cite{basili1996validation, hassan2009predicting}. In more recent work, researchers have used more advanced techniques like adaptive regressions, ensemble learning etc \cite{bettenburg2012think, dietterich2000experimental}. Several context sensitive analysis based defect predictors are explored as well \cite{menzies2011local}.  
 
 ...Despite the fact that, there have been numerous advanced miners deployed in defect prediction; classification techniques to build defect prediction models have focused on the performance. However, as the volume of software source codes increases in daily basis, so does the size of defect prediction examples from which the classifiers will predict the defects. Hence, in case of traditional learners, memory and sample size will be a dominant obstacle if those are fed with incrementally large amount of data from time to time. Being trained with small number of data also suffers from overfitting. Meanwhile, currently there are many online data-miners are available which are sample size agnostic. Thus exploring the comparison of traditional learners and online data miners have become a priority.  
 
-In this paper, we have put three offline classifiers named CART decision tree based classifier, Fast Frugal Tree (FFT), Random forest against online classifier named VFDT. We will look into three research questions in particular:
+In this paper, we have put three offline classifiers named CART decision tree based classifier, Fast Frugal Tree (FFT), Random forest against online classifier named VFDT \cite{domingos2000mining}. We will look into three research questions in particular:
 \begin{itemize}
 	\item \textbf{RQ1: } How these four classifiers performs in large defect prediction datasets that will increment over time
 	\item \textbf{RQ2: } How hyper-parameters changes as the data size changes
 	\item \textbf{RQ3: } How much computation resources would be used by these four learners 
 \end{itemize}
 
-We have used four defect prediction datasets obtained from (...). These datasets contains around $40,000$ examples on an average. From our observation we found out that, VFDT performs better and more stable manner than the other three as the data size increases. Moreover, the performance differential becomes more prominent among those learners considering datasize increase and finding tuning parameters.  
+We have used four defect prediction datasets obtained from (...). These datasets contains around $40,000$ examples on an average. From our observation we found out that, VFDT performs better and more stable manner than the other three as the data size increases. Moreover, the performance differential becomes more prominent among those learners considering data size increase and finding tuning parameters.  
 
 Rest of the paper is organized as follows. In the section II, we will discuss existing literature study on this aspect. In section III, we will discuss baseline criteria upon which we will evaluate our comparison of the learners, In section IV, we will discuss the experiment setup and result analysis. Finally, it will be followed by discussion and future work scope in the section V. 
 
 \section{Related Work}
-bla bla bla
+ 
 
 \section{Background and Motivation}
 ...
@@ -116,7 +116,7 @@ In addition, there are several other baselines that deserves mention:
 \subsubsection{Criteria for this Work}
 All of the aforementioned criteria are more or less critical for any learner. However, set of baselines critical for a particular domain depends on many contexts as well. In some cases, computational performance might be the most critical. In other case, the accuracy might be the most critical one. In the context of this work, we will try to observe the performance of various tree based learners on incremental data. Hence, for our work, here are the list of critical baseline we will look more closely:
 \begin{enumerate}
-	\item \textbf{Usefulness: } The output of the miners should be at least better than some random guess. In this work, the miner would predict whether a given example contains bugs or not. The typical evaluation metrics such as precision and recall of the learners would be put into the focus. The examples will be fed into the miners in an incremental manner and we would observe how those evaluation measure changes over the new datasets that fed into the learners.
+	\item \textbf{Usefulness and Reasonable: } The output of the miners should be at least better than some random guess. In this work, the miner would predict whether a given example contains bugs or not. The typical evaluation metrics such as precision and recall of the learners would be put into the focus. The examples will be fed into the miners in an incremental manner and we would observe how those evaluation measure changes over the new datasets that fed into the learners. Also the outputs need to better than the established learners.
 	\item \textbf{Stable: } Stability is quite important in case of prediction. If the output of the learners produces varying degree of outputs, then the decision making process would be frustrating. In the context of this work, we would look into the stability of the prediction of the learners in terms of incrementally updated set of examples and observe how these learners perform.
 	\item \textbf{Cheap: } The computational resources being used by the learners is another important aspect. Learners might produce great results but if it comes using heavy computational resources such as cpu time and memory, then it might not become that useful in real world scenario. In this work, learners will learn from a range of small datasets to large one. So, we will try to gather information on how much cpu time and memory resources those learner will use to produce results.
 	\item \textbf{Robust: } In case of incremental datasets, the learners need to accommodate all the newer examples. However, this might also confuse learners with different examples or noisy examples. So it needs to be seen how robustly the learner can handle all the examples that will be added in the larger datasets.
@@ -125,7 +125,7 @@ All of the aforementioned criteria are more or less critical for any learner. Ho
 \end{enumerate}
 
 \subsection{Motivation}
-These days, source codes are being committed to the source code repository periodically. The frequency of committing newer code base is ranged from hours and to days. In order to help developers with new potential defects while the new code base being committed, need to relearn the whole defect prediction model is necessary. As the new code is being pushed, software source code metrics which are being used be defect prediction models needs to be recomputed. Hence, the newer examples of software defects would come into play. So, assuming that newer version of source code being committed to the repository at least once in a day results into re-computation and relearning the whole things from the scratch. Traditional decision tree based learners such as Classification and Regression Tree, Random Forest, Fast frugal Trees all would need to relearn everything which is very cpu and memory extensive. If, high speed stream based learners would have been used in this scenario, then there would be no need to relearn everything from scratch as the streaming data miners automatically accommodates the newer examples with the existing models. That signifies the motivation of this work. We would like to observe how streaming learners perform against the offline learners in terms of feeding newer set of examples periodically. Hence, in this work, we would compare CART, RF and FFT against VFDT which is an online stream based decision tree learner and compare all these learners from the aspect of aforementioned baseline criteria.
+In the domain of software defect prediction, several learners have been applied which includes logistic regression, neural networks, decision tress, ensemble learning, evolutionary algorithms and context sensitive analysis \cite{menzies2011local, basili1996validation, hassan2009predicting, zimmermann2007predicting, bettenburg2012think, dietterich2000experimental,briand2001replicated,panichella2014cross}. All of these learners load the whole data into primary memory and performs the classification task. However, things have changes rapidly over years. These days, source codes are being committed to the source code repository periodically. The frequency of committing newer code base is ranged from hours and to days. In order to help developers with new potential defects while the new code base being committed, need to relearn the whole defect prediction model is necessary. As the new code is being pushed, software source code metrics which are being used be defect prediction models needs to be recomputed. Hence, the newer examples of software defects would come into play. So, assuming that newer version of source code being committed to the repository at least once in a day results into re-computation and relearning the whole things from the scratch. Traditional decision tree based learners such as Classification and Regression Tree, Random Forest, Fast frugal Trees all would need to relearn everything which is very cpu and memory extensive. If, high speed stream based learners would have been used in this scenario, then there would be no need to relearn everything from scratch as the streaming data miners automatically accommodates the newer examples with the existing models. That signifies the motivation of this work. We would like to observe how streaming learners perform against the offline learners in terms of feeding newer set of examples periodically. Hence, in this work, we would compare CART, RF and FFT against VFDT which is an online stream based decision tree learner and compare all these learners from the aspect of aforementioned baseline criteria.
 
 \subsection{Classifiers}
 In this work, we will observe the performance of four decision tree based classifiers. Here is a short description of each of these classifiers.
@@ -141,7 +141,7 @@ Fast and Frugal trees is a type of decision tree where a set of hierarchical rul
 
 \subsubsection{VFDT - Very Fast Decision Tree}
 Classic decision tree learners like ID3, C4.5 and CART assume that all training examples can be stored simultaneously in main memory, and are thus
-severely limited in the number of examples they can learn from. Disk-based decision tree learners like SLIQ [10] and SPRINT [17] assume the examples are stored on disk, an 
+severely limited in the number of examples they can learn from. Disk-based decision tree learners like SLIQ and SPRINT assume the examples are stored on disk \cite{mehta1996sliq, quinlan1995oversearching}, an 
 learn by repeatedly reading them in sequentially (effectively once per level in the tree). While this greatly increases the
 size of usable training sets, it can become prohibitively expensive when learning complex trees (i.e., trees with many levels), and fails when datasets are too large to fit in the
 available disk space
@@ -157,7 +157,7 @@ down to the corresponding leaves and used to choose the appropriate attributes t
 
 \begin{figure}
 	\includegraphics[width=\linewidth]{figs/vfdt.PNG}
-	\caption{The VFDT Algorithm}
+	\caption{The VFDT Algorithm \cite{domingos2000mining}}
 	\label{fig:vfdt}
 \end{figure}
 
@@ -272,10 +272,10 @@ The evaluation criteria are discussed below:
 	\begin{equation}
 	recall = \frac{true \ positive}{true \ positive + false \ negative}
 	\end{equation}
-%	\item \textbf{False Alarm: } This is the ratio of all detected bugs that are false positives and detected bugs that are false negatives and false positives. 
-%	\begin{equation}
-%	false \ alarm = \frac{false \ positive}{false \ positive + false \ negative}
-%	\end{equation}
+	\item \textbf{False Alarm: } This is the ratio of all detected bugs that are false positives and detected bugs that are false negatives and false positives. 
+	\begin{equation}
+	false \ alarm = \frac{false \ positive}{false \ positive + true \ negative}
+	\end{equation}
 %	\item \textbf{F-Measure: } This is the harmonic mean of precision and recall. It signifies the overall prediction quality of the classifier.
 %	\begin{equation}
 %	f \ measure = \frac{2*precision*recall}{precision+recall}
@@ -352,7 +352,21 @@ From the figure \ref{fig:md-size-prec} and \ref{fig:md-size-prec} we can see tha
 	\label{fig:auc-size}
 \end{figure}
 
-..effort estimation
+\begin{figure}
+	\centering
+	\begin{subfigure}[b]{\linewidth}
+		\includegraphics[width=.49\linewidth]{fig/abinit-size-fa.png} \ 
+		\includegraphics[width=.49\linewidth]{fig/lammps-size-fa.png}
+	\end{subfigure}
+	\begin{subfigure}[b]{\linewidth}
+		\includegraphics[width=.49\linewidth]{fig/libmesh-size-fa.png} \ 
+		\includegraphics[width=.49\linewidth]{fig/mda-size-fa.png}
+	\end{subfigure}
+	
+	\caption{Data Size vs Time}\label{fig:fa}
+\end{figure}
+
+From the figure \ref{fig:fa}, we can see that false alarm count for all the datasets are higher. It can also be seen that false alarm score is similar to recall score across all the datasets. Hence, we looked into the confusion matrix of the learners and observed that across all size, the number of True Negatives (TN) and False Negatives (FN) are higher than that of True Positives (TP) and False Positives (FP). Moreover, TN and FN are similar. Theoretically, if the precision score is around $50\%$, then recall score and false alarm score would become similar. This happens because, if precision is around $0.5$, then TP will be similar to FP. So, that will mean, the value of $\frac{TP}{TP+FN}$ and $\frac{FP}{FP+FN}$ will be similar. Thus we can conclude that recall and false alarm will be similar. 
 
 In principle, the key observation from the analysis of four datasets are given below: 
 \begin{itemize}
@@ -361,10 +375,22 @@ In principle, the key observation from the analysis of four datasets are given b
 	\item Precision and recall scores of all the three learners except VFDT either goes up or down with the increase of data fed into them. For VFDT, it remains stable. As, VFDT reaches hoeffding bound and grows tree accordingly, with the increase of the data size, it's tree structure does not change. Hence, its precision and recall score also stay unchanged.
 	\item As we performed tuning of the learners with $25\%$ of the examples, it is obvious that optimal parameters for VFDT did not change while newer examples came. But with the arrival of newer examples, optimal set of parameters of CART and RF have changes. This is why their precision and recall score dropped.  
 	\item the precision score also tells us that all the learner performed marginally better than a random guess. 
+	\item High rate of false alarm is a genuine concern. It is also associated with the fact of precision score not getting better than the random guess.
 \end{itemize}
 
 \subsection{RQ2: How hyper-parameters changes as the data size changes}
-From the analysis in previous section, it is obvious that when the learner faces substantial amount of newer examples, their prediction performance goes down. Consequently, it remains to be seen whether further parameter tuning improves their performance or not. Keeping this in mind, we perform another three parameter tuning while the datasets finished processing $50\%$, $75\%$ and $100\%$ of the total examples. We observed that precision score does not vary significantly across the dataset size from all the learners, hence in our differential evolution method, we tried to optimize the parameters on the basis of recall score. Here is the summary of the findings:
+From the analysis in previous section, it is obvious that when the learner faces substantial amount of newer examples, their prediction performance goes down. Consequently, it remains to be seen whether further parameter tuning improves their performance or not. Moreover, we understood that, if we want to decrease the false alarm, we need to increase the precision score. So we first tried parameter tuning to increase the f1 score with very high iteration count. As it is time consuming, we just applied parameter tuning for only CART on $25\%$ of the datasets. We initially not to choose RF, FFT or VFDT because applying parameter tuning on them is time consuming due to the facts mentioned below:
+
+\begin{enumerate}
+	\item We have already applied all the learners on all the datasets across $40$ split size with $10$ random sample of it. Still, we could not manage to get a decent f1 score. So, there might be a possibility that, we won't find any better precision and recall at the same time. 
+	\item FFT is inherently time consuming for discretization on more than $25$ attributes. It is also built from scratched and not as optimized as scikit-learn CART
+	\item RF needs to build at least $10$ estimators and thus at least $10$ times expensive than CART
+	\item VFDT can be much faster than CART. However, parameter tuning with $n_min$ and $\tau$ can be time consuming as well.
+\end{enumerate} 
+
+After running the differential evolution algorithm, we found out that the best precision score we got is $0.56$ from \textit{lammps} dataset and worst we got is $0.48$ from \textit{abinit} dataset. After that, we ran the DE once again but with a goal to maximize the difference between recall and false alarm rate. We found out a maximum difference of $0.07$ in \textit{lammps} dataset.
+
+Keeping this in mind, we perform another three parameter tuning while the datasets finished processing $50\%$, $75\%$ and $100\%$ of the total examples. We observed that precision score does not vary significantly across the dataset size from all the learners, hence in our differential evolution method, we tried to optimize the parameters on the basis of recall score. Here is the summary of the findings:
 
 \begin{figure}[h]
 	\includegraphics[width=\linewidth]{fig/tune-ab.png}
@@ -414,26 +440,43 @@ From the above fig \ref{fig:time}, we can see that FFT is very expensive in term
 \begin{table}
 	\begin{tabular}{|c|c|c|}
 		\hline 
-		\textbf{Learner} & \textbf{Time} & Me\textbf{}mory \\ 
+		\textbf{Learner} & \textbf{Time} & \textbf{Memory} \\ 
 		\hline 
-		CART & 654k & 14GB \\ 
+		CART & 332 sec & 6.1 GB \\ 
 		\hline 
-		RF & 895k & 14Gb \\ 
+		RF & 425 sec & 6.1 GB \\ 
 		\hline 
-		VFDT & 5.2k & 1.2GB \\ 
+		VFDT & 34 sec & 271 MB \\ 
 		\hline 
 	\end{tabular}
 	\caption{Computation Resource Usage for Very Large Dataset} 
 	\label{higgs}
 \end{table}
 
+\subsection{Revisiting Baseline Criteria: }
+Our initital motivation is to observe whether stream based VFDT can do better than the offline classifiers. Hence, based on the observation above, here is our observation from the aspect of the aforementioned baseline.
+\begin{enumerate}
+	\item \textbf{Useful: } In terms of precision, no learner is useful as those are not better than random guess significantly. However, in terms of recall, VFDT have outperformed others.
+	\item \textbf{Reasonable: } VFDT has performed no worse than the other established learners in this case.
+	\item \textbf{Stable: } VFDT has shown much more stable result than the other three
+	\item \textbf{Robust: } Across different datasets and splits, VFDT has shown more robust performance than the other three.
+	\item \textbf{Cheap: } VFDT is computationally cheaper than the others.
+	\item \textbf{Streaming: } VFDT can handle large datasets sequentially and it does not need to load the whole set of examples to primary memory.
+	\item \textbf{Tunable: } Parameter tuning yielded better recall rates for VFDT than the others across all the sizes.
+\end{enumerate}
+
 \section{Threats to Validity}
+\begin{enumerate}
+	\item \textbf{Sampling Bias: } Like every classification experiment, our work is also subject to have some bias in sampling training and test data. Although we have sampled $10$ disjoint training and testing datasets for each dataset, it could have been better if the sampling number was higher
+	\item \textbf{Random Bias: } Some of the learners in our experiments utilized random value generation such as RF. Rerunning such classifiers multiple times could given us a less biased outputs.
+	\item \textbf{Parameter Bias: } In differential evolution algorithm, we have used some parameters to find the best parameters for the learners. So inherently, the tuning method also suffers from some degree of biasness induced by the parameters in the tuning algorithms.
+	\item \textbf{Code Optimization: } Our developing from scratch programs for VFDT and FFT are not as optimized as the CART and RF from scikit-learn package. So our experiment for computational resource could have been bias free if we had built the RF and CART from the scratch as well.
+	\item \textbf{Dataset: } The experiment we performed is biased on the four datasets. It should also be conducted on other large defect datasets to get a more neutral perception.
+	\item \textbf{Cross Validation: } The performance of the learners could have been better observed if cross-validation was performed. However, as the data is ordered, it was not possible.
+\end{enumerate}
 
-
-
-%\section{Threats to Validity}
-
-%\section{Future Work Direction and Conclusion}
+\section{Future Work Direction and Conclusion}
+Despite the fact that, VFDT has gained in all the baseline criteria we looked into so far, it has also opened several future work directions. Firstly, the experiment should also be performed in other large software defect datasets to gain even better understanding. Second, the issue of high rate of false alarm should be probed. Moreover, using multi-threading and multi-processing, VFDT can be made much more faster as well. Finally, C-VFDT \cite{hulten2001mining} - which is a variant of VFDT can be much more useful in the defect prediction scenario as it can change its tree structure due to any potential distribution change in large dataset - can be deployed in defect prediction and the performance should be observed.
 
 %% Bibliography
 \bibliography{bibfile}

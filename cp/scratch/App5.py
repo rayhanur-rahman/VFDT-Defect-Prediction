@@ -1,6 +1,15 @@
 import csv, re, Utils, math, sys, Node, timeit, os, psutil, numpy as np
 
+dts = 'lb'
+sz = 25
+
 def readRowsLineByLine(csvFile, classIndex, split, root, d, n, t, s):
+
+    if dts == 'ab': ln = 71443
+    if dts == 'lb': ln = 19724
+    if dts == 'lm': ln = 5693
+    if dts == 'md': ln = 1172
+
     list = []
     numeric = []
     categorical = []
@@ -56,7 +65,7 @@ def readRowsLineByLine(csvFile, classIndex, split, root, d, n, t, s):
             # memory = process.memory_info()[0] / float(2 ** 20)
             # print(memory)
 
-        if streamIndex >= split :
+        if streamIndex >= (ln*split)/100 :
             # print(f'loc read: {loc}')
             break
 
@@ -145,33 +154,51 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
                     best = trial_denorm
         yield best, fitness[best_idx]
 
-
 def obj(args):
     root = Node.Node('root')
-    result = readRowsLineByLine('/home/rr/Workspace/NCSUFSS18/cp/datasets/libmesh-train-1.csv', 0, 2000, root, math.floor(args[0]), math.floor(args[1]), args[2], math.floor(args[3])  )
+    result = readRowsLineByLine(f'{dts}-train.csv', 0, sz, root, math.floor(args[0]), math.floor(args[1]), args[2], math.floor(args[3])  )
     root.deadEnd = False
     try:
-        result = readRowsForTest('/home/rr/Workspace/NCSUFSS18/cp/datasets/libmesh-test-1.csv', 0, 0, root)
+        result = readRowsForTest(f'{dts}-test.csv', 0, 0, root)
     except:
         result = [0,0,0]
     root = None
-    # print(f'{args[0]:.2f} {args[1]:.2f} {args[2]:.2f} {args[3]:.2f} {result[2]:.2f}')
-    return 100 - result[2]*100
+    r = result[2] * 100
+    return 100 - r
 
-print(f'libmesh vfdt')
+print(f'{dts} vfdt {sz}')
 it = list(de(obj, bounds=[ (2,20), (5,500), (.001, .99), (5,500)  ], its=10))
 
-for index in range(-1, -6, -1):
+print(100 - it[-1][1])
+
+for index in range(-1, -2, -1):
     depth = math.floor(it[index][0][0])
     nmin = math.floor(it[index][0][1])
     tau = it[index][0][2]
     split = math.floor(it[index][0][3])
-    recall = 100 - it[index][1]
-    print(f'{depth}, {nmin}, {tau:.3f}, {split}, {recall:.2f}')
-
-# root = Node.Node('root')
-# result = readRowsLineByLine('/home/rr/Workspace/NCSUFSS18/cp/datasets/libmesh-train-1.csv', 0, 20000, root, 2,5,.55,5  )
-# root.deadEnd = False
-# result = readRowsForTest('/home/rr/Workspace/NCSUFSS18/cp/datasets/libmesh-test-1.csv', 0, 0, root)
-# root = None
-# print(result)
+    root = Node.Node('root')
+    result = readRowsLineByLine(f'{dts}-train.csv', 0, 25, root, math.floor(depth), math.floor(nmin), tau, math.floor(split))
+    root.deadEnd = False
+    result = readRowsForTest(f'{dts}-test.csv', 0, 0, root)
+    root = None
+    print(f'{result[2]}')
+    root = Node.Node('root')
+    result = readRowsLineByLine(f'{dts}-train.csv', 0, 50, root, math.floor(depth), math.floor(nmin), tau,
+                                math.floor(split))
+    root.deadEnd = False
+    result = readRowsForTest(f'{dts}-test.csv', 0, 0, root)
+    root = None
+    print(f'{result[2]}')
+    root = Node.Node('root')
+    result = readRowsLineByLine(f'{dts}-train.csv', 0, 75, root, math.floor(depth), math.floor(nmin), tau,
+                                math.floor(split))
+    root.deadEnd = False
+    result = readRowsForTest(f'{dts}-test.csv', 0, 0, root)
+    root = None
+    print(f'{result[2]}')
+    root = Node.Node('root')
+    result = readRowsLineByLine(f'{dts}-train.csv', 0, 100, root, math.floor(depth), math.floor(nmin), tau, math.floor(split))
+    root.deadEnd = False
+    result = readRowsForTest(f'{dts}-test.csv', 0, 0, root)
+    root = None
+    print(f'{result[2]}')

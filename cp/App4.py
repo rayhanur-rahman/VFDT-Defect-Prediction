@@ -10,6 +10,7 @@ from sklearn.ensemble import RandomForestClassifier
 
 
 def learn(trainFile, testFile, training_size, depth, leaf, split, forest):
+    start = timeit.default_timer()
     balance_data = pd.read_csv(trainFile,sep= ',', header=None)
     balance_data_test = pd.read_csv(testFile,sep= ',', header=None)
 
@@ -26,7 +27,6 @@ def learn(trainFile, testFile, training_size, depth, leaf, split, forest):
     y_train = Y
     y_test = Y2
 
-    start = timeit.default_timer()
     clf_entropy = DecisionTreeClassifier(criterion = "entropy",
                                      random_state = 100,
                                      max_depth=depth,
@@ -102,7 +102,7 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
     best_idx = np.argmin(fitness)
     best = pop_denorm[best_idx]
     for i in range(its):
-        # print(i)
+        print(i)
         for j in range(popsize):
             idxs = [idx for idx in range(popsize) if idx != j]
             a, b, c = pop[np.random.choice(idxs, 3, replace = False)]
@@ -113,26 +113,49 @@ def de(fobj, bounds, mut=0.8, crossp=0.7, popsize=20, its=1000):
             trial = np.where(cross_points, mutant, pop[j])
             trial_denorm = min_b + trial * diff
             f = fobj(trial_denorm)
-            if f < fitness[j]:
+            if f > fitness[j]:
                 fitness[j] = f
                 pop[j] = trial
-                if f < fitness[best_idx]:
+                if f > fitness[best_idx]:
                     best_idx = j
                     best = trial_denorm
         yield best, fitness[best_idx]
 
+dts = 'ab'
+sz = 25
+
 def obj(args):
-    out = learn(f'/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-train-1.csv',
-                f'/home/rr/Workspace/NCSUFSS18/cp/datasets/abinit-test-1.csv', 10, math.floor(args[0]), args[1]/200, args[2]/100, math.floor(args[3]))
-    return 100 - out[2]*100
+    out = learn(f'{dts}-train.csv',
+                f'{dts}-test.csv', sz, math.floor(args[0]), args[1]/200, args[2]/100, math.floor(args[3]))
+    r = out[2]
+    p = out[1]
+    a = out[3]
+    return math.fabs(r - a)
+    if p+r==0: return 0
+    else:
+        f = 2*p*r/(p+r)
+        return f
 
-print('abinit cart')
+print(f'{dts} cart {sz}')
 it = list(de(obj, bounds=[ (3,10), (1,49), (1,99), (10,100)  ], its=10))
+print(it[-1][1]*100)
 
-for index in range(-1, -6, -1):
-    depth = math.floor(it[index][0][0])
-    leaf = it[index][0][1]/200
-    split = it[index][0][2]/100
-    forest = math.floor(it[index][0][3])
-    recall = 100 - it[index][1]
-    print(f'{depth}, {leaf:.2f}, {split:.2f}, {forest}, {recall:2f}')
+def run():
+    for index in range(-1, -2, -1):
+        depth = math.floor(it[index][0][0])
+        leaf = it[index][0][1]/200
+        split = it[index][0][2]/100
+        forest = math.floor(it[index][0][3])
+        recall = it[index][1]
+        out = learn(f'{dts}-train.csv', f'{dts}-test.csv', 25, depth, leaf, split, forest)
+        print(f'{out[1]:.2f} {out[2]:.2f} {out[3]:.2f}')
+        out = learn(f'{dts}-train.csv', f'{dts}-test.csv', 50, depth, leaf, split, forest)
+        print(f'{out[1]:.2f} {out[2]:.2f} {out[3]:.2f}')
+        out = learn(f'{dts}-train.csv', f'{dts}-test.csv', 75, depth, leaf, split, forest)
+        print(f'{out[1]:.2f} {out[2]:.2f} {out[3]:.2f}')
+        out = learn(f'{dts}-train.csv', f'{dts}-test.csv', 100, depth, leaf, split, forest)
+        print(f'{out[1]:.2f} {out[2]:.2f} {out[3]:.2f}')
+        return
+
+run()
+

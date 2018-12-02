@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{0}
+\begin{thebibliography}{15}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -36,5 +36,192 @@
 \providecommand\bibinfo[2]{#2}
 \providecommand\natexlab[1]{#1}
 \providecommand\showeprint[2][]{arXiv:#2}
+
+\bibitem[\protect\citeauthoryear{Basili, Briand, and Melo}{Basili
+  et~al\mbox{.}}{1996}]%
+        {basili1996validation}
+\bibfield{author}{\bibinfo{person}{Victor~R Basili}, \bibinfo{person}{Lionel~C.
+  Briand}, {and} \bibinfo{person}{Walc{\'e}lio~L Melo}.}
+  \bibinfo{year}{1996}\natexlab{}.
+\newblock \showarticletitle{A validation of object-oriented design metrics as
+  quality indicators}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on software engineering}}
+  \bibinfo{volume}{22}, \bibinfo{number}{10} (\bibinfo{year}{1996}),
+  \bibinfo{pages}{751--761}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Bettenburg, Nagappan, and Hassan}{Bettenburg
+  et~al\mbox{.}}{2012}]%
+        {bettenburg2012think}
+\bibfield{author}{\bibinfo{person}{Nicolas Bettenburg},
+  \bibinfo{person}{Meiyappan Nagappan}, {and} \bibinfo{person}{Ahmed~E
+  Hassan}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{Think locally, act globally: Improving defect and
+  effort prediction models}. In \bibinfo{booktitle}{\emph{Proceedings of the
+  9th IEEE Working Conference on Mining Software Repositories}}. IEEE Press,
+  \bibinfo{pages}{60--69}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Briand, W{\"u}st, and Lounis}{Briand
+  et~al\mbox{.}}{2001}]%
+        {briand2001replicated}
+\bibfield{author}{\bibinfo{person}{Lionel~C Briand},
+  \bibinfo{person}{J{\"u}rgen W{\"u}st}, {and} \bibinfo{person}{Hakim Lounis}.}
+  \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Replicated case studies for investigating quality
+  factors in object-oriented designs}.
+\newblock \bibinfo{journal}{\emph{Empirical software engineering}}
+  \bibinfo{volume}{6}, \bibinfo{number}{1} (\bibinfo{year}{2001}),
+  \bibinfo{pages}{11--58}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Dietterich}{Dietterich}{2000}]%
+        {dietterich2000experimental}
+\bibfield{author}{\bibinfo{person}{Thomas~G Dietterich}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{An experimental comparison of three methods for
+  constructing ensembles of decision trees: Bagging, boosting, and
+  randomization}.
+\newblock \bibinfo{journal}{\emph{Machine learning}} \bibinfo{volume}{40},
+  \bibinfo{number}{2} (\bibinfo{year}{2000}), \bibinfo{pages}{139--157}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Domingos and Hulten}{Domingos and
+  Hulten}{2000}]%
+        {domingos2000mining}
+\bibfield{author}{\bibinfo{person}{Pedro Domingos} {and} \bibinfo{person}{Geoff
+  Hulten}.} \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Mining high-speed data streams}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the sixth ACM SIGKDD international
+  conference on Knowledge discovery and data mining}}. ACM,
+  \bibinfo{pages}{71--80}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Erlikh}{Erlikh}{2000}]%
+        {erlikh2000leveraging}
+\bibfield{author}{\bibinfo{person}{Len Erlikh}.}
+  \bibinfo{year}{2000}\natexlab{}.
+\newblock \showarticletitle{Leveraging legacy system dollars for e-business}.
+\newblock \bibinfo{journal}{\emph{IT professional}} \bibinfo{volume}{2},
+  \bibinfo{number}{3} (\bibinfo{year}{2000}), \bibinfo{pages}{17--23}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hall, Beecham, Bowes, Gray, and Counsell}{Hall
+  et~al\mbox{.}}{2012}]%
+        {hall2012systematic}
+\bibfield{author}{\bibinfo{person}{Tracy Hall}, \bibinfo{person}{Sarah
+  Beecham}, \bibinfo{person}{David Bowes}, \bibinfo{person}{David Gray}, {and}
+  \bibinfo{person}{Steve Counsell}.} \bibinfo{year}{2012}\natexlab{}.
+\newblock \showarticletitle{A systematic literature review on fault prediction
+  performance in software engineering}.
+\newblock \bibinfo{journal}{\emph{IEEE Transactions on Software Engineering}}
+  \bibinfo{volume}{38}, \bibinfo{number}{6} (\bibinfo{year}{2012}),
+  \bibinfo{pages}{1276--1304}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hassan}{Hassan}{2009}]%
+        {hassan2009predicting}
+\bibfield{author}{\bibinfo{person}{Ahmed~E Hassan}.}
+  \bibinfo{year}{2009}\natexlab{}.
+\newblock \showarticletitle{Predicting faults using the complexity of code
+  changes}. In \bibinfo{booktitle}{\emph{Proceedings of the 31st International
+  Conference on Software Engineering}}. IEEE Computer Society,
+  \bibinfo{pages}{78--88}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Hulten, Spencer, and Domingos}{Hulten
+  et~al\mbox{.}}{2001}]%
+        {hulten2001mining}
+\bibfield{author}{\bibinfo{person}{Geoff Hulten}, \bibinfo{person}{Laurie
+  Spencer}, {and} \bibinfo{person}{Pedro Domingos}.}
+  \bibinfo{year}{2001}\natexlab{}.
+\newblock \showarticletitle{Mining time-changing data streams}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the seventh ACM SIGKDD international
+  conference on Knowledge discovery and data mining}}. ACM,
+  \bibinfo{pages}{97--106}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Mehta, Agrawal, and Rissanen}{Mehta
+  et~al\mbox{.}}{1996}]%
+        {mehta1996sliq}
+\bibfield{author}{\bibinfo{person}{Manish Mehta}, \bibinfo{person}{Rakesh
+  Agrawal}, {and} \bibinfo{person}{Jorma Rissanen}.}
+  \bibinfo{year}{1996}\natexlab{}.
+\newblock \showarticletitle{SLIQ: A fast scalable classifier for data mining}.
+  In \bibinfo{booktitle}{\emph{International Conference on Extending Database
+  Technology}}. Springer, \bibinfo{pages}{18--32}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Menzies, Butcher, Marcus, Zimmermann, and
+  Cok}{Menzies et~al\mbox{.}}{2011}]%
+        {menzies2011local}
+\bibfield{author}{\bibinfo{person}{Tim Menzies}, \bibinfo{person}{Andrew
+  Butcher}, \bibinfo{person}{Andrian Marcus}, \bibinfo{person}{Thomas
+  Zimmermann}, {and} \bibinfo{person}{David Cok}.}
+  \bibinfo{year}{2011}\natexlab{}.
+\newblock \showarticletitle{Local vs. global models for effort estimation and
+  defect prediction}. In \bibinfo{booktitle}{\emph{Proceedings of the 2011 26th
+  IEEE/ACM International Conference on Automated Software Engineering}}. IEEE
+  Computer Society, \bibinfo{pages}{343--351}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Panichella, Oliveto, and De~Lucia}{Panichella
+  et~al\mbox{.}}{2014}]%
+        {panichella2014cross}
+\bibfield{author}{\bibinfo{person}{Annibale Panichella}, \bibinfo{person}{Rocco
+  Oliveto}, {and} \bibinfo{person}{Andrea De~Lucia}.}
+  \bibinfo{year}{2014}\natexlab{}.
+\newblock \showarticletitle{Cross-project defect prediction models: L'union
+  fait la force}. In \bibinfo{booktitle}{\emph{Software Maintenance,
+  Reengineering and Reverse Engineering (CSMR-WCRE), 2014 Software Evolution
+  Week-IEEE Conference on}}. IEEE, \bibinfo{pages}{164--173}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Quinlan and Cameron-Jones}{Quinlan and
+  Cameron-Jones}{1995}]%
+        {quinlan1995oversearching}
+\bibfield{author}{\bibinfo{person}{J Quinlan} {and} \bibinfo{person}{R
+  Cameron-Jones}.} \bibinfo{year}{1995}\natexlab{}.
+\newblock \showarticletitle{Oversearching and layered search in empirical
+  learning}.
+\newblock \bibinfo{journal}{\emph{breast cancer}}  \bibinfo{volume}{286}
+  (\bibinfo{year}{1995}), \bibinfo{pages}{2--7}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Shihab}{Shihab}{2012}]%
+        {shihab2012exploration}
+\bibfield{author}{\bibinfo{person}{Emad Shihab}.}
+  \bibinfo{year}{2012}\natexlab{}.
+\newblock \emph{\bibinfo{title}{An exploration of challenges limiting pragmatic
+  software defect prediction}}.
+\newblock \bibinfo{thesistype}{Ph.D. Dissertation}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Zimmermann, Premraj, and Zeller}{Zimmermann
+  et~al\mbox{.}}{2007}]%
+        {zimmermann2007predicting}
+\bibfield{author}{\bibinfo{person}{Thomas Zimmermann}, \bibinfo{person}{Rahul
+  Premraj}, {and} \bibinfo{person}{Andreas Zeller}.}
+  \bibinfo{year}{2007}\natexlab{}.
+\newblock \showarticletitle{Predicting defects for eclipse}. In
+  \bibinfo{booktitle}{\emph{Predictor Models in Software Engineering, 2007.
+  PROMISE'07: ICSE Workshops 2007. International Workshop on}}. IEEE,
+  \bibinfo{pages}{9--9}.
+\newblock
+
 
 \end{thebibliography}

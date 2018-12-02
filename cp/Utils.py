@@ -414,7 +414,7 @@ def FFT(list, chunks):
     # print(f'{len(newList)} {nodeStatistics}')
     return newList, chunks, nodeStatistics
 
-def calCulateFMeasure(predictioMatrix):
+def calCulateFMeasure1(predictioMatrix):
     classes = []
     predictedClasses = []
     outcome = []
@@ -473,3 +473,33 @@ def calCulateFMeasure(predictioMatrix):
     # print(f'accuracy \t precison \t recall \t false alarm \t d2h \t f1 score')
     # print(f'{accuracy*100:.2f} {precision*100:.2f} {recall*100:.2f} {falseAlarm*100:.2f} {d2h*100:.2f} {f1score*100:.2f} {ifa}')
     return [accuracy, precision, recall, falseAlarm, d2h, f1score, ifa]
+
+def calCulateFMeasure(predictioMatrix):
+    TP = 0
+    FP = 0
+    TN = 0
+    FN = 0
+
+    for item in predictioMatrix:
+        actualClass = item[0]
+        predictedClass = item[1]
+        outcome = item[2]
+
+        if actualClass == 1 and predictedClass == 1: TP += 1
+        if actualClass == 0 and predictedClass == 0: TN += 1
+        if actualClass == 0 and predictedClass == 1: FP += 1
+        if actualClass == 1 and predictedClass == 0: FN += 1
+
+    # print(f'{TN} {FP}\n{FN} {TP}')
+
+    accuracy = (TP + FN) / (TP + FP + TN + FN + .001)
+    precision = TP / (TP + FP + .001)
+    recall = TP / (TP + FN + .001)
+    falseAlarm = FP / (FP + TN + .001)
+    d2h = math.sqrt((1 - recall) * (1 - recall) + falseAlarm * falseAlarm)
+    f1score = (2 * precision * recall) / (precision + recall + .001)
+    ifa=0
+    # print(f'accuracy \t precison \t recall \t false alarm \t d2h \t f1 score')
+    # print(f'{accuracy*100:.2f} {precision*100:.2f} {recall*100:.2f} {falseAlarm*100:.2f} {d2h*100:.2f} {f1score*100:.2f} {ifa}')
+    return [accuracy, precision, recall, falseAlarm, d2h, f1score, ifa]
+
