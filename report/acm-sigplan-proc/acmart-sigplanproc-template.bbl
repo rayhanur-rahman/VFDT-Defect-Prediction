@@ -2,7 +2,7 @@
 %%% Do NOT edit. File created by BibTeX with style
 %%% ACM-Reference-Format-Journals [18-Jan-2012].
 
-\begin{thebibliography}{15}
+\begin{thebibliography}{25}
 
 %%% ====================================================================
 %%% NOTE TO THE USER: you can override these defaults by providing
@@ -78,6 +78,28 @@
 \newblock
 
 
+\bibitem[\protect\citeauthoryear{Canzian and Van Der~Schaar}{Canzian and Van
+  Der~Schaar}{2015}]%
+        {canzian2015real}
+\bibfield{author}{\bibinfo{person}{Luca Canzian} {and} \bibinfo{person}{Mihaela
+  Van Der~Schaar}.} \bibinfo{year}{2015}\natexlab{}.
+\newblock \showarticletitle{Real-time stream mining: online knowledge
+  extraction using classifier networks}.
+\newblock \bibinfo{journal}{\emph{IEEE Network}} \bibinfo{volume}{29},
+  \bibinfo{number}{5} (\bibinfo{year}{2015}), \bibinfo{pages}{10--16}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{De~Francisci~Morales}{De~Francisci~Morales}{2013}]%
+        {de2013samoa}
+\bibfield{author}{\bibinfo{person}{Gianmarco De~Francisci~Morales}.}
+  \bibinfo{year}{2013}\natexlab{}.
+\newblock \showarticletitle{SAMOA: A platform for mining big data streams}. In
+  \bibinfo{booktitle}{\emph{Proceedings of the 22nd International Conference on
+  World Wide Web}}. ACM, \bibinfo{pages}{777--778}.
+\newblock
+
+
 \bibitem[\protect\citeauthoryear{Dietterich}{Dietterich}{2000}]%
         {dietterich2000experimental}
 \bibfield{author}{\bibinfo{person}{Thomas~G Dietterich}.}
@@ -137,6 +159,18 @@
 \newblock
 
 
+\bibitem[\protect\citeauthoryear{Hoeffding}{Hoeffding}{1963}]%
+        {hoeffding1963probability}
+\bibfield{author}{\bibinfo{person}{Wassily Hoeffding}.}
+  \bibinfo{year}{1963}\natexlab{}.
+\newblock \showarticletitle{Probability inequalities for sums of bounded random
+  variables}.
+\newblock \bibinfo{journal}{\emph{Journal of the American statistical
+  association}} \bibinfo{volume}{58}, \bibinfo{number}{301}
+  (\bibinfo{year}{1963}), \bibinfo{pages}{13--30}.
+\newblock
+
+
 \bibitem[\protect\citeauthoryear{Hulten, Spencer, and Domingos}{Hulten
   et~al\mbox{.}}{2001}]%
         {hulten2001mining}
@@ -148,6 +182,17 @@
   conference on Knowledge discovery and data mining}}. ACM,
   \bibinfo{pages}{97--106}.
 \newblock
+
+
+\bibitem[\protect\citeauthoryear{Krishna}{Krishna}{2018}]%
+        {github}
+\bibfield{author}{\bibinfo{person}{Rahul Krishna}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{{github/se4sci/defect-prediction}}.
+\newblock \bibinfo{howpublished}{\url{https://git.io/fpKiu}}.
+\newblock
+\newblock
+\shownote{[Online; last accessed 2-Dec-2008].}
 
 
 \bibitem[\protect\citeauthoryear{Mehta, Agrawal, and Rissanen}{Mehta
@@ -201,6 +246,53 @@
 \newblock
 
 
+\bibitem[\protect\citeauthoryear{Rahman}{Rahman}{2018}]%
+        {ncsufss18}
+\bibfield{author}{\bibinfo{person}{Md~Rayhanur Rahman}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{{github/brokenquark/NCSUFSS18}}.
+\newblock \bibinfo{howpublished}{\url{https://git.io/fpKMM}}.
+\newblock
+\newblock
+\shownote{[Online; last accessed 2-Dec-2008].}
+
+
+\bibitem[\protect\citeauthoryear{Repository}{Repository}{2018}]%
+        {uciml}
+\bibfield{author}{\bibinfo{person}{UCI~ML Repository}.}
+  \bibinfo{year}{2018}\natexlab{}.
+\newblock \bibinfo{title}{{Higgs Dataset}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://archive.ics.uci.edu/ml/datasets/HIGGS}}.
+\newblock
+\newblock
+\shownote{[Online; last accessed 2-Dec-2008].}
+
+
+\bibitem[\protect\citeauthoryear{scikit learn}{scikit learn}{2018a}]%
+        {scikit-learn-rf}
+\bibfield{author}{\bibinfo{person}{scikit learn}.}
+  \bibinfo{year}{2018}\natexlab{a}.
+\newblock \bibinfo{title}{{sklearn.ensemble.RandomForestClassifier}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://scikit-learn.org/stable/modules/generated/sklearn.ensemble.RandomForestClassifier.html}}.
+\newblock
+\newblock
+\shownote{[Online; last accessed 2-Dec-2008].}
+
+
+\bibitem[\protect\citeauthoryear{scikit learn}{scikit learn}{2018b}]%
+        {scikit-learn-dt}
+\bibfield{author}{\bibinfo{person}{scikit learn}.}
+  \bibinfo{year}{2018}\natexlab{b}.
+\newblock \bibinfo{title}{{sklearn.tree.DecisionTreeClassifier}}.
+\newblock
+  \bibinfo{howpublished}{\url{https://scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}.
+\newblock
+\newblock
+\shownote{[Online; last accessed 2-Dec-2008].}
+
+
 \bibitem[\protect\citeauthoryear{Shihab}{Shihab}{2012}]%
         {shihab2012exploration}
 \bibfield{author}{\bibinfo{person}{Emad Shihab}.}
@@ -208,6 +300,18 @@
 \newblock \emph{\bibinfo{title}{An exploration of challenges limiting pragmatic
   software defect prediction}}.
 \newblock \bibinfo{thesistype}{Ph.D. Dissertation}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{Storn and Price}{Storn and Price}{1997}]%
+        {storn1997differential}
+\bibfield{author}{\bibinfo{person}{Rainer Storn} {and} \bibinfo{person}{Kenneth
+  Price}.} \bibinfo{year}{1997}\natexlab{}.
+\newblock \showarticletitle{Differential evolution--a simple and efficient
+  heuristic for global optimization over continuous spaces}.
+\newblock \bibinfo{journal}{\emph{Journal of global optimization}}
+  \bibinfo{volume}{11}, \bibinfo{number}{4} (\bibinfo{year}{1997}),
+  \bibinfo{pages}{341--359}.
 \newblock
 
 
@@ -221,6 +325,16 @@
   \bibinfo{booktitle}{\emph{Predictor Models in Software Engineering, 2007.
   PROMISE'07: ICSE Workshops 2007. International Workshop on}}. IEEE,
   \bibinfo{pages}{9--9}.
+\newblock
+
+
+\bibitem[\protect\citeauthoryear{{\v{Z}}liobait{\.e}}{{\v{Z}}liobait{\.e}}{2010}]%
+        {vzliobaite2010learning}
+\bibfield{author}{\bibinfo{person}{Indr{\.e} {\v{Z}}liobait{\.e}}.}
+  \bibinfo{year}{2010}\natexlab{}.
+\newblock \showarticletitle{Learning under concept drift: an overview}.
+\newblock \bibinfo{journal}{\emph{arXiv preprint arXiv:1010.4784}}
+  (\bibinfo{year}{2010}).
 \newblock
 
 
